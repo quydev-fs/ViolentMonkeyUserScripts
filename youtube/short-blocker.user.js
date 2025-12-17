@@ -1,9 +1,11 @@
 // ==UserScript==
-// @name         YouTube Minimal Element Blocker
+// @name         YouTube Short Element Blocker
 // @match        *://m.youtube.com/*
 // @match        *://www.youtube.com/*
 // @run-at       document-end
 // @grant        none
+// @homepageURL  https://github.com/quydev-fs/ViolentMonkeyUserScripts
+// @updateURL    https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/tiktok/tiktok-blocker.user.js
 // ==/UserScript==
 
 (function () {
