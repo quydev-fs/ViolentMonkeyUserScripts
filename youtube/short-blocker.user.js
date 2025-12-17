@@ -5,7 +5,7 @@
 // @run-at       document-end
 // @grant        none
 // @homepageURL  https://github.com/quydev-fs/ViolentMonkeyUserScripts
-// @updateURL    https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/tiktok/tiktok-blocker.user.js
+// @updateURL    https://raw.githubusercontent.com/quydev-fs/ViolentMonkeyUserScripts/refs/heads/main/youtube/short-blocker.user.js
 // ==/UserScript==
 
 (function () {
