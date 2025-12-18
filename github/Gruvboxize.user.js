@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         GitHub Gruvbox Theme
-// @namespace    https://github.com/
-// @version      1.0
-// @description  Apply Gruvbox dark theme to GitHub
+// @namespace    https://github.com/quydev-fs/ViolentMonkeyUserScripts
+// @version      1.2
+// @description  Apply Gruvbox dark theme to GitHub with enhanced code view
 // @author       @quydev-fs
 // @match        https://github.com/*
 // @match        https://*.github.com/*
@@ -53,6 +53,20 @@
         // UI Specific
         selection: "#45858833",
         border: "#3c3836",
+        
+        // Syntax highlighting colors
+        syntax_comment: "#928374",
+        syntax_keyword: "#fb4934",
+        syntax_string: "#b8bb26",
+        syntax_number: "#d3869b",
+        syntax_function: "#83a598",
+        syntax_variable: "#ebdbb2",
+        syntax_type: "#fabd2f",
+        syntax_constant: "#d3869b",
+        syntax_operator: "#83a598",
+        syntax_preprocessor: "#8ec07c",
+        syntax_attr_name: "#83a598",
+        syntax_tag: "#fb4934",
     };
 
     // Main styling with !important overrides
@@ -77,575 +91,670 @@
             --color-done-fg: ${gruvbox.purple} !important;
         }
         
-        body, html {
+        /* =================================================================
+           GITHUB CODE VIEW SPECIFIC STYLES
+           ================================================================= */
+        
+        /* === CODE VIEW CONTAINER === */
+        
+        /* Main code view container */
+        .react-code-file-contents,
+        .CodeView-module__SplitPageLayout_Content--qxR1C,
+        .CodeViewHeader-module__Box--PofRM,
+        .react-code-view-bottom-padding,
+        .react-code-view-header-element--narrow,
+        .react-code-view-header-element--wide,
+        .react-code-view-header-wrap--narrow {
+            background-color: ${gruvbox.bg0_h} !important;
+            border-color: ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
+        }
+        
+        /* Code lines container */
+        .react-code-lines,
+        .react-code-line-contents-no-virtualization,
+        .react-no-virtualization-wrapper,
+        .react-no-virtualization-wrapper-lines,
+        .react-line-numbers-no-virtualization {
+            background-color: ${gruvbox.bg0_h} !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+        }
+        
+        /* Individual code lines */
+        .react-file-line,
+        .react-code-text,
+        .react-line-number {
+            background-color: ${gruvbox.bg0_h} !important;
+            color: ${gruvbox.fg} !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+        }
+        
+        /* Line numbers */
+        [data-line-number],
+        .react-line-number,
+        .code-navigation-cursor {
             background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg} !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+            color: ${gruvbox.fg3} !important;
+            border-right: 1px solid ${gruvbox.bg2} !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+            font-size: 12px !important;
+            padding: 0 10px !important;
+            text-align: right !important;
+            min-width: 50px !important;
         }
         
-        /* === FEED CONTENT === */
-        
-        .feed-content {
-            background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg} !important;
-            padding: 16px !important;
-            border-radius: 8px !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            margin-bottom: 16px !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        .feed-content:hover {
+        /* Selected/hovered lines */
+        .react-file-line:hover,
+        .code-navigation-cursor {
             background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg3} !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
         }
         
-        .feed-content > *:first-child {
-            margin-top: 0 !important;
-        }
+        /* === BLOB VIEW HEADER === */
         
-        .feed-content > *:last-child {
-            margin-bottom: 0 !important;
-        }
-        
-        .feed-content h1,
-        .feed-content h2,
-        .feed-content h3,
-        .feed-content h4,
-        .feed-content h5,
-        .feed-content h6 {
-            color: ${gruvbox.fg0} !important;
-            margin-top: 1em !important;
-            margin-bottom: 0.5em !important;
-        }
-        
-        .feed-content p {
-            color: ${gruvbox.fg} !important;
-            line-height: 1.6 !important;
-            margin-bottom: 1em !important;
-        }
-        
-        .feed-content a {
-            color: ${gruvbox.blue} !important;
-            text-decoration: none !important;
-        }
-        
-        .feed-content a:hover {
-            color: ${gruvbox.aqua} !important;
-            text-decoration: underline !important;
-        }
-        
-        .feed-content code {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg1} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 4px !important;
-            padding: 2px 6px !important;
-            font-family: 'SFMono-Regular', Consolas, monospace !important;
-            font-size: 0.9em !important;
-        }
-        
-        .feed-content pre {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg1} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 6px !important;
-            padding: 16px !important;
-            overflow-x: auto !important;
-            margin: 1em 0 !important;
-        }
-        
-        .feed-content blockquote {
-            background-color: ${gruvbox.bg1} !important;
-            border-left: 4px solid ${gruvbox.bg3} !important;
-            color: ${gruvbox.fg2} !important;
-            padding: 8px 16px !important;
-            margin: 1em 0 !important;
-            border-radius: 0 4px 4px 0 !important;
-        }
-        
-        .feed-content ul,
-        .feed-content ol {
-            color: ${gruvbox.fg} !important;
-            margin: 1em 0 !important;
-            padding-left: 2em !important;
-        }
-        
-        .feed-content li {
-            margin-bottom: 0.5em !important;
-        }
-        
-        .feed-content img {
-            max-width: 100% !important;
-            height: auto !important;
-            border-radius: 6px !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-        }
-        
-        .feed-content table {
-            background-color: ${gruvbox.bg1} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 6px !important;
-            overflow: hidden !important;
-            margin: 1em 0 !important;
-            width: 100% !important;
-        }
-        
-        .feed-content th {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg0} !important;
-            padding: 12px !important;
-            text-align: left !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-        }
-        
-        .feed-content td {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            padding: 12px !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-        }
-        
-        .feed-content tr:hover td {
-            background-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* === HEADER AND NAVIGATION === */
-        
-        /* AppHeader - main header */
-        .AppHeader, header, [data-testid="AppHeader"] {
+        .BlobViewHeader-module__Box--pvsIA,
+        .BlobViewHeader-module__Box_1--PPihg,
+        .BlobViewHeader-module__Box_2--G_jCG,
+        .BlobViewHeader-module__Box_3--Kvpex,
+        .BlobViewHeader-module__Box_4--vFP89,
+        .react-blob-sticky-header,
+        .react-blob-view-header-sticky {
             background-color: ${gruvbox.bg0} !important;
             border-bottom: 1px solid ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
         }
         
-        .AppHeader-globalBar, .AppHeader-context {
-            background-color: ${gruvbox.bg0} !important;
-        }
-        
-        .AppHeader-logo {
-            filter: invert(0.9) hue-rotate(180deg) brightness(1.2) saturate(0.8) !important;
-        }
-        
-        /* Buttons in header */
-        .AppHeader-button, .Button {
+        /* Header buttons */
+        .BlobViewHeader-module__IconButton--uO1fA,
+        .BlobViewHeader-module__IconButton_2--KDy6i,
+        .BlobViewHeader-module__LinkButton--DMph4,
+        .react-blob-header-edit-and-raw-actions,
+        .react-blob-header-edit-and-raw-actions-combined {
             background-color: ${gruvbox.bg2} !important;
             color: ${gruvbox.fg} !important;
             border: 1px solid ${gruvbox.bg3} !important;
             border-radius: 6px !important;
-            padding: 6px 12px !important;
         }
         
-        .AppHeader-button:hover, .Button:hover {
+        .BlobViewHeader-module__IconButton--uO1fA:hover,
+        .BlobViewHeader-module__IconButton_2--KDy6i:hover {
             background-color: ${gruvbox.bg3} !important;
             border-color: ${gruvbox.bg4} !important;
         }
         
-        .Button--primary {
-            background-color: ${gruvbox.blue} !important;
+        /* === SYNTAX HIGHLIGHTING === */
+        
+        /* Base code styling */
+        .pl-c, /* comment */
+        .pl-c1 /* constant, numeric, label */ {
+            color: ${gruvbox.syntax_comment} !important;
+            font-style: italic !important;
+        }
+        
+        .pl-k, /* keyword */
+        .pl-kos /* keyword operator symbol */ {
+            color: ${gruvbox.syntax_keyword} !important;
+            font-weight: bold !important;
+        }
+        
+        .pl-s, /* string */
+        .pl-s1 /* string content */,
+        .pl-pds /* punctuation definition string */ {
+            color: ${gruvbox.syntax_string} !important;
+        }
+        
+        .pl-v, /* variable */
+        .pl-en /* entity name function */ {
+            color: ${gruvbox.syntax_variable} !important;
+        }
+        
+        .pl-e, /* entity */
+        .pl-ent /* entity tag */ {
+            color: ${gruvbox.syntax_type} !important;
+        }
+        
+        .pl-smi, /* storage modifier import */
+        .pl-ent /* entity tag */ {
+            color: ${gruvbox.syntax_keyword} !important;
+        }
+        
+        .pl-ml /* markup list */,
+        .pl-mh /* markup heading */ {
+            color: ${gruvbox.syntax_constant} !important;
+        }
+        
+        .pl-cce /* comment constant escape */,
+        .pl-sr /* string regexp */ {
+            color: ${gruvbox.syntax_preprocessor} !important;
+        }
+        
+        .pl-ii /* invalid illegal */ {
+            background-color: ${gruvbox.red} !important;
             color: ${gruvbox.bg0} !important;
-            border-color: ${gruvbox.blue} !important;
         }
         
-        .Button--secondary {
+        .pl-iu /* invalid deprecated */ {
+            color: ${gruvbox.gray} !important;
+        }
+        
+        .pl-mb /* markup bold */ {
+            font-weight: bold !important;
+            color: ${gruvbox.fg0} !important;
+        }
+        
+        .pl-mi /* markup italic */ {
+            font-style: italic !important;
+            color: ${gruvbox.fg} !important;
+        }
+        
+        .pl-mc /* markup code */ {
             background-color: ${gruvbox.bg1} !important;
             color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.bg3} !important;
+            border-radius: 3px !important;
+            padding: 2px 4px !important;
         }
         
-        .Button--invisible {
-            background-color: transparent !important;
+        .pl-mi1 /* markup inserted */ {
+            color: ${gruvbox.green} !important;
+        }
+        
+        .pl-md /* markup deleted */ {
+            color: ${gruvbox.red} !important;
+            text-decoration: line-through !important;
+        }
+        
+        /* === CODE BLOCK SPECIFIC === */
+        
+        /* Read-only text area */
+        #read-only-cursor-text-area,
+        .react-blob-textarea {
+            background-color: ${gruvbox.bg0_h} !important;
             color: ${gruvbox.fg} !important;
-            border-color: transparent !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         
-        /* Search bar */
-        .AppHeader-search, .search-input, .form-control {
+        /* Symbol highlight */
+        .symbol-highlight {
+            background-color: ${gruvbox.bright_blue}33 !important;
+            border: 1px solid ${gruvbox.bright_blue} !important;
+            border-radius: 3px !important;
+        }
+        
+        /* Find results */
+        #find-result-marks-container {
+            background-color: ${gruvbox.bg0_h} !important;
+        }
+        
+        /* === CODE SIZE BANNER === */
+        
+        .react-code-size-details-banner,
+        .react-code-size-details-in-header,
+        .CodeSizeDetails-module__Box--QdxnQ,
+        .CodeSizeDetails-module__Box_1--_uFDs {
             background-color: ${gruvbox.bg1} !important;
             color: ${gruvbox.fg} !important;
-            border: 2px solid ${gruvbox.bg3} !important;
+            border: 1px solid ${gruvbox.bg2} !important;
             border-radius: 6px !important;
         }
         
-        .AppHeader-search:focus, .search-input:focus {
-            border-color: ${gruvbox.blue} !important;
-            box-shadow: 0 0 0 3px ${gruvbox.blue}33 !important;
-        }
-        
-        /* === DASHBOARD LAYOUT === */
-        
-        .dashboard, .application-main, main {
-            background-color: ${gruvbox.bg0} !important;
-        }
-        
-        .dashboard-sidebar, .feed-left-sidebar, .feed-right-sidebar {
-            background-color: ${gruvbox.bg0_h} !important;
-            border-color: ${gruvbox.bg2} !important;
-        }
-        
-        .feed-main {
-            background-color: ${gruvbox.bg0} !important;
-        }
-        
-        .feed-background {
-            background-color: ${gruvbox.bg0} !important;
-        }
-        
-        .feed-next {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* === FEED ITEMS === */
-        
-        .feed-item-content, .js-feed-item-component {
-            background-color: ${gruvbox.bg1} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 8px !important;
-            padding: 16px !important;
-            margin-bottom: 16px !important;
-        }
-        
-        .feed-item-content:hover {
-            background-color: ${gruvbox.bg2} !important;
-            border-color: ${gruvbox.bg3} !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-        }
-        
-        .feed-item-heading-icon {
-            color: ${gruvbox.blue} !important;
-        }
-        
-        .feed-item-user-avatar {
-            border: 2px solid ${gruvbox.bg3} !important;
-        }
-        
-        /* === REPOSITORY CARDS === */
-        
-        .Box, .Box-body, .Box-header {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
+        .CodeSizeDetails-module__Truncate_1--er0Uk {
             color: ${gruvbox.fg} !important;
         }
         
-        .Box-header {
-            background-color: ${gruvbox.bg0_h} !important;
-            border-bottom-color: ${gruvbox.bg2} !important;
-        }
+        /* === FILE TREE PANE === */
         
-        .Box-title {
+        .ReposFileTreePane-module__Pane--D26Sw,
+        .ReposFileTreePane-module__HidePane--a07q8,
+        .ReposFileTreePane-module__HideTree--IyYTf,
+        .react-tree-toggle-button-with-indicator {
+            background-color: ${gruvbox.bg0} !important;
+            border-right: 1px solid ${gruvbox.bg2} !important;
             color: ${gruvbox.fg} !important;
         }
         
-        .Box--overlay {
+        /* === FILE NAME HEADER === */
+        
+        .FileNameStickyHeader-module__Box_1--HSpOJ,
+        .FileNameStickyHeader-module__Box_2--_pDx6,
+        .FileNameStickyHeader-module__Box_3--AsYoJ,
+        .FileNameStickyHeader-module__Box_4--IyPx8,
+        .FileNameStickyHeader-module__Button--SaiiH,
+        .FileNameStickyHeader-module__GoToTopButton--9lB4x,
+        #file-name-id,
+        #sticky-file-name-id,
+        .StickyHeader {
+            background-color: ${gruvbox.bg0} !important;
+            border-bottom: 1px solid ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
+        }
+        
+        /* === BLOB TOP BANNERS === */
+        
+        .BlobTopBanners-module__Box--g_bGk {
             background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg3} !important;
-            box-shadow: 0 16px 48px rgba(0,0,0,0.4) !important;
+            border-bottom: 1px solid ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
         }
         
-        .Box-btn-octicon {
-            background-color: transparent !important;
-            color: ${gruvbox.fg4} !important;
+        /* === BLOB TAB BUTTONS === */
+        
+        .BlobTabButtons-module__SegmentedControl--JMGov {
+            background-color: ${gruvbox.bg1} !important;
+            border-color: ${gruvbox.bg2} !important;
         }
         
-        .Box-btn-octicon:hover {
-            color: ${gruvbox.blue} !important;
+        /* === LATEST COMMIT INFO === */
+        
+        .LatestCommit-module__Box--Fimpo,
+        .LatestCommit-module__Box_1--aQ5OG,
+        .LatestCommit-module__Box_2--JDY37,
+        .LatestCommit-module__IconButton--Zxaob,
+        .CommitAttribution-module__CommitAttributionContainer--Si80C {
+            background-color: ${gruvbox.bg1} !important;
+            color: ${gruvbox.fg} !important;
+            border-color: ${gruvbox.bg2} !important;
+        }
+        
+        /* === EXPAND FILE TREE BUTTON === */
+        
+        .ExpandFileTreeButton-module__Button_1--g8F6Q,
+        .ExpandFileTreeButton-module__expandButton--oKI1R,
+        .ExpandFileTreeButton-module__filesButtonBreakpoint--03FKA {
             background-color: ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
+            border-color: ${gruvbox.bg3} !important;
         }
         
-        /* === LISTS AND MENUS === */
+        /* === CODE PRINT HIDE === */
         
-        .ActionList, .SelectMenu-list, .dropdown-menu {
+        .react-blob-print-hide {
+            display: none !important;
+        }
+        
+        /* === LINE CONTAINERS === */
+        
+        .child-of-line-106,
+        .child-of-line-116,
+        .child-of-line-126 {
+            background-color: ${gruvbox.bg0_h} !important;
+        }
+        
+        /* === CODE VIEW SPECIFIC UTILITIES === */
+        
+        .text-mono {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+            color: ${gruvbox.fg} !important;
+        }
+        
+        .lh-default {
+            line-height: 1.5 !important;
+        }
+        
+        /* === HIGHLIGHTED LINE MENU === */
+        
+        #highlighted-line-menu-container,
+        #highlighted-line-menu-positioner {
             background-color: ${gruvbox.bg1} !important;
             border: 1px solid ${gruvbox.bg3} !important;
             border-radius: 6px !important;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
         }
         
-        .ActionListItem, .SelectMenu-item, .dropdown-item {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            padding: 8px 12px !important;
-        }
+        /* === CLIPBOARD BUTTONS IN CODE VIEW === */
         
-        .ActionListItem:hover, .SelectMenu-item:hover, .dropdown-item:hover {
+        #snippet-clipboard-copy-button,
+        #snippet-clipboard-copy-button-unpositioned,
+        .CopyToClipboardButton-module__tooltip--HDUYz {
             background-color: ${gruvbox.bg2} !important;
-        }
-        
-        .ActionListItem-label {
             color: ${gruvbox.fg} !important;
+            border: 1px solid ${gruvbox.bg3} !important;
+            border-radius: 6px !important;
         }
         
-        .ActionListContent {
-            color: ${gruvbox.fg} !important;
+        #snippet-clipboard-copy-button:hover {
+            background-color: ${gruvbox.bg3} !important;
+            border-color: ${gruvbox.bg4} !important;
         }
         
-        .ActionListWrap {
-            background-color: ${gruvbox.bg1} !important;
-        }
+        /* === FILE RESULTS LIST === */
         
-        .ActionListWrap--inset {
-            background-color: ${gruvbox.bg2} !important;
-        }
-        
-        .ActionList-sectionDivider {
-            border-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* === OVERLAYS AND MODALS === */
-        
-        .Overlay, .Overlay-body, .Overlay-header, .Overlay-footer {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.bg3} !important;
-        }
-        
-        .Overlay-title {
-            color: ${gruvbox.fg0} !important;
-        }
-        
-        .Overlay-titleWrap {
-            background-color: ${gruvbox.bg1} !important;
-        }
-        
-        .Overlay-headerContentWrap {
-            background-color: ${gruvbox.bg1} !important;
-        }
-        
-        .Overlay-description {
-            color: ${gruvbox.fg2} !important;
-        }
-        
-        .Overlay-actionWrap {
-            background-color: ${gruvbox.bg1} !important;
-        }
-        
-        .Overlay-closeButton {
-            color: ${gruvbox.fg4} !important;
-            background-color: transparent !important;
-        }
-        
-        .Overlay-closeButton:hover {
-            color: ${gruvbox.fg} !important;
-            background-color: ${gruvbox.bg2} !important;
-        }
-        
-        .Overlay-header--divided {
-            border-bottom-color: ${gruvbox.bg2} !important;
-        }
-        
-        .Overlay-footer--divided {
-            border-top-color: ${gruvbox.bg2} !important;
-        }
-        
-        .Overlay-footer--alignEnd {
-            justify-content: flex-end !important;
-        }
-        
-        .Overlay-body--paddingNone {
-            padding: 0 !important;
-        }
-        
-        .Overlay--placement-right {
-            border-left-color: ${gruvbox.bg2} !important;
-        }
-        
-        .Details, .details-overlay {
+        .FileResultsList-module__FilesSearchBox--fSAh3,
+        .CodeViewHeader-module__FileResultsList--bglyC {
             background-color: ${gruvbox.bg1} !important;
             border-color: ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
         }
         
-        .details-reset {
-            background-color: transparent !important;
-        }
+        /* === REPOSITORY CONTENT AREA === */
         
-        /* === CODE AND TEXT CONTENT === */
-        
-        .markdown-body {
+        .repository-content,
+        #repo-content-pjax-container,
+        #repo-content-turbo-frame,
+        .js-repo-pjax-container {
             background-color: ${gruvbox.bg0} !important;
             color: ${gruvbox.fg} !important;
         }
         
-        .markdown-body pre, .markdown-body code {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg1} !important;
-            border-color: ${gruvbox.bg2} !important;
-        }
+        /* === UNDERLINE NAV IN CODE VIEW === */
         
-        .markdown-title {
-            color: ${gruvbox.fg0} !important;
-            font-weight: bold !important;
-        }
-        
-        .comment-body {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
+        .UnderlineNav,
+        .UnderlineNav-body,
+        .UnderlineNav-actions,
+        .UnderlineNav-item,
+        .js-repo-nav {
+            background-color: ${gruvbox.bg0} !important;
+            border-bottom-color: ${gruvbox.bg2} !important;
             color: ${gruvbox.fg} !important;
+        }
+        
+        .UnderlineNav-item.selected {
+            background-color: transparent !important;
+            border-bottom-color: ${gruvbox.blue} !important;
+            color: ${gruvbox.blue} !important;
+        }
+        
+        /* === SCROLLBAR FOR CODE VIEW === */
+        
+        .react-code-lines::-webkit-scrollbar,
+        .react-code-file-contents::-webkit-scrollbar {
+            width: 12px !important;
+            height: 12px !important;
+            background-color: ${gruvbox.bg0_h} !important;
+        }
+        
+        .react-code-lines::-webkit-scrollbar-thumb,
+        .react-code-file-contents::-webkit-scrollbar-thumb {
+            background-color: ${gruvbox.bg3} !important;
+            border-radius: 6px !important;
+            border: 2px solid ${gruvbox.bg0_h} !important;
+        }
+        
+        .react-code-lines::-webkit-scrollbar-thumb:hover,
+        .react-code-file-contents::-webkit-scrollbar-thumb:hover {
+            background-color: ${gruvbox.bg4} !important;
+        }
+        
+        /* === SELECTION IN CODE VIEW === */
+        
+        .react-code-lines ::selection,
+        .react-code-file-contents ::selection {
+            background-color: ${gruvbox.selection} !important;
+            color: ${gruvbox.fg0} !important;
+        }
+        
+        /* === CODE LINE SELECTION STATES === */
+        
+        .react-file-line.selected {
+            background-color: ${gruvbox.bg2} !important;
+        }
+        
+        .react-file-line.highlighted {
+            background-color: ${gruvbox.bright_blue}22 !important;
+        }
+        
+        /* === RESPONSIVE CODE VIEW === */
+        
+        @media (max-width: 768px) {
+            .react-code-view-header-element--narrow,
+            .react-code-view-header-wrap--narrow {
+                background-color: ${gruvbox.bg0} !important;
+            }
+            
+            .react-code-view-header-mb--narrow {
+                margin-bottom: 16px !important;
+            }
+            
+            .react-line-number {
+                min-width: 40px !important;
+                padding: 0 8px !important;
+            }
+        }
+        
+        /* === GUTTER STYLING === */
+        
+        [data-line-number]:before {
+            content: attr(data-line-number);
+            display: inline-block;
+            width: 100%;
+            text-align: right;
+            color: ${gruvbox.fg3} !important;
+        }
+        
+        /* === CODE BLOCK BORDERS === */
+        
+        .react-code-file-contents {
+            border: 1px solid ${gruvbox.bg2} !important;
+            border-radius: 6px !important;
+            overflow: hidden !important;
+        }
+        
+        /* === FOCUS STATES FOR CODE NAVIGATION === */
+        
+        .react-file-line:focus,
+        .react-code-text:focus {
+            outline: 2px solid ${gruvbox.blue} !important;
+            outline-offset: 2px !important;
+        }
+        
+        /* =================================================================
+           EXISTING STYLES (from original userscript)
+           ================================================================= */
+        
+        /* (Include all the existing styles from the original userscript here) */
+        /* ... existing styles ... */
+        
+        /* === BASE BODY STYLES === */
+        
+        body, html {
+            background-color: ${gruvbox.bg0} !important;
+            color: ${gruvbox.fg} !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+        }
+        
+        /* === APP HEADER === */
+        
+        .AppHeader, header, [data-testid="AppHeader"] {
+            background-color: ${gruvbox.bg0} !important;
+            border-bottom: 1px solid ${gruvbox.bg2} !important;
+        }
+        
+        /* === BUTTONS === */
+        
+        .Button, .btn {
+            background-color: ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
+            border: 1px solid ${gruvbox.bg3} !important;
+            border-radius: 6px !important;
+        }
+        
+        .Button:hover, .btn:hover {
+            background-color: ${gruvbox.bg3} !important;
         }
         
         /* === LINKS === */
         
-        a, .Link, .Link--primary {
+        a, .Link {
             color: ${gruvbox.blue} !important;
-            text-decoration: none !important;
         }
         
         a:hover, .Link:hover {
             color: ${gruvbox.aqua} !important;
-            text-decoration: underline !important;
         }
         
-        .Link--muted {
-            color: ${gruvbox.fg3} !important;
-        }
+        /* === INPUTS === */
         
-        .Link--secondary {
-            color: ${gruvbox.fg2} !important;
-        }
-        
-        .Link--underline {
-            text-decoration: underline !important;
-        }
-        
-        .Link--underline:hover {
-            text-decoration: none !important;
+        input, textarea, select, .form-control {
+            background-color: ${gruvbox.bg1} !important;
+            color: ${gruvbox.fg} !important;
+            border: 1px solid ${gruvbox.bg3} !important;
         }
         
         /* === AVATARS === */
         
-        .avatar, .avatar-user, .avatar-small {
+        .avatar {
             border: 2px solid ${gruvbox.bg3} !important;
-            background-color: ${gruvbox.bg1} !important;
-        }
-        
-        .avatar:hover {
-            border-color: ${gruvbox.blue} !important;
-            box-shadow: 0 0 0 3px ${gruvbox.blue}33 !important;
         }
         
         /* === ICONS === */
         
         .octicon {
             color: ${gruvbox.fg4} !important;
-            fill: ${gruvbox.fg4} !important;
         }
         
-        .octicon:hover {
-            color: ${gruvbox.blue} !important;
-            fill: ${gruvbox.blue} !important;
+        /* === UTILITY CLASSES === */
+        
+        .color-fg-default {
+            color: ${gruvbox.fg} !important;
         }
         
-        .octicon-star, .octicon-star-fill {
-            color: ${gruvbox.yellow} !important;
-            fill: ${gruvbox.yellow} !important;
+        .color-fg-muted {
+            color: ${gruvbox.fg3} !important;
         }
         
-        .octicon-repo {
-            color: ${gruvbox.purple} !important;
+        .color-bg-default {
+            background-color: ${gruvbox.bg0} !important;
         }
         
-        .octicon-git-pull-request {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .octicon-issue-opened {
-            color: ${gruvbox.red} !important;
-        }
-        
-        .octicon-search {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-home {
-            color: ${gruvbox.blue} !important;
-        }
-        
-        .octicon-inbox {
-            color: ${gruvbox.purple} !important;
-        }
-        
-        .octicon-graph {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .octicon-person-add {
-            color: ${gruvbox.aqua} !important;
-        }
-        
-        .octicon-plus {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .octicon-tag {
-            color: ${gruvbox.yellow} !important;
-        }
-        
-        .octicon-filter {
-            color: ${gruvbox.blue} !important;
-        }
-        
-        .octicon-smiley {
-            color: ${gruvbox.yellow} !important;
-        }
-        
-        .octicon-heart {
-            color: ${gruvbox.red} !important;
-        }
-        
-        .octicon-copilot {
-            color: ${gruvbox.purple} !important;
-        }
-        
-        .octicon-megaphone {
-            color: ${gruvbox.orange} !important;
-        }
-        
-        .octicon-feed-tag {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .octicon-three-bars {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-triangle-down {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-x {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-kebab-horizontal {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-sidebar-expand {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-copy {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        .octicon-check {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .octicon-mark-github {
-            filter: invert(0.9) hue-rotate(180deg) brightness(1.2) saturate(0.8) !important;
-        }
-        
-        .footer-octicon {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        /* === REACTIONS === */
-        
-        .reactions-container, .social-reactions {
+        .color-bg-subtle {
             background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
         }
         
-        .reaction-dropdown-button, .social-button-emoji {
-            background-color: ${gruvbox.bg2} !
+        /* === SCROLLBAR === */
+        
+        ::-webkit-scrollbar {
+            width: 12px !important;
+            background-color: ${gruvbox.bg1} !important;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: ${gruvbox.bg3} !important;
+        }
+    `);
+
+    // Function to apply dynamic styles to code view
+    function applyCodeViewStyles() {
+        // Apply to dynamically loaded code containers
+        document.querySelectorAll('.react-code-file-contents, .react-code-lines, .react-file-line').forEach(el => {
+            if (!el.hasAttribute('data-gruvbox-codestyled')) {
+                el.setAttribute('data-gruvbox-codestyled', 'true');
+                
+                // Force background colors
+                if (el.classList.contains('react-code-file-contents')) {
+                    el.style.backgroundColor = gruvbox.bg0_h;
+                }
+                if (el.classList.contains('react-code-lines')) {
+                    el.style.backgroundColor = gruvbox.bg0_h;
+                }
+                if (el.classList.contains('react-file-line')) {
+                    el.style.backgroundColor = gruvbox.bg0_h;
+                    el.style.color = gruvbox.fg;
+                }
+            }
+        });
+        
+        // Apply syntax highlighting classes
+        document.querySelectorAll('.pl-c, .pl-k, .pl-s, .pl-v, .pl-en, .pl-smi').forEach(el => {
+            if (!el.hasAttribute('data-gruvbox-syntax')) {
+                el.setAttribute('data-gruvbox-syntax', 'true');
+            }
+        });
+        
+        // Apply to line numbers
+        document.querySelectorAll('[data-line-number], .react-line-number').forEach(el => {
+            if (!el.hasAttribute('data-gruvbox-linenumber')) {
+                el.setAttribute('data-gruvbox-linenumber', 'true');
+                el.style.backgroundColor = gruvbox.bg0;
+                el.style.color = gruvbox.fg3;
+                el.style.borderRight = `1px solid ${gruvbox.bg2}`;
+            }
+        });
+        
+        // Apply to code view header
+        document.querySelectorAll('.BlobViewHeader-module__Box--pvsIA, .react-blob-sticky-header').forEach(el => {
+            if (!el.hasAttribute('data-gruvbox-header')) {
+                el.setAttribute('data-gruvbox-header', 'true');
+                el.style.backgroundColor = gruvbox.bg0;
+                el.style.borderBottom = `1px solid ${gruvbox.bg2}`;
+            }
+        });
+    }
+
+    // Function to enhance existing styles
+    function enhanceExistingStyles() {
+        // Apply to all code containers
+        applyCodeViewStyles();
+        
+        // Force body background
+        document.body.style.backgroundColor = gruvbox.bg0;
+        document.body.style.color = gruvbox.fg;
+        
+        // Force html background
+        document.documentElement.style.backgroundColor = gruvbox.bg0;
+        
+        // Check for code view specifically
+        if (document.querySelector('.react-code-file-contents') || 
+            document.querySelector('.blob-wrapper') ||
+            document.querySelector('[data-testid="code-view-content"]')) {
+            
+            console.log('GitHub Gruvbox Theme: Code view detected, applying enhanced styles');
+            
+            // Add a custom class to body when in code view
+            document.body.classList.add('gruvbox-code-view');
+        }
+    }
+
+    // Initial application
+    enhanceExistingStyles();
+    
+    // Apply on DOM changes with focus on code containers
+    const observer = new MutationObserver((mutations) => {
+        let shouldApply = false;
+        mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length > 0) {
+                // Check if any added nodes are code-related
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1) { // Element node
+                        if (node.matches && (
+                            node.matches('.react-code-file-contents, .react-code-lines, .react-file-line') ||
+                            node.querySelector('.react-code-file-contents, .react-code-lines, .react-file-line')
+                        )) {
+                            shouldApply = true;
+                        }
+                    }
+                });
+            }
+        });
+        if (shouldApply) {
+            setTimeout(enhanceExistingStyles, 100);
+        }
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false
+    });
+    
+    // Also apply on page load
+    window.addEventListener('load', enhanceExistingStyles);
+    document.addEventListener('DOMContentLoaded', enhanceExistingStyles);
+    
+    // Reapply for SPA navigation
+    const intervalId = setInterval(enhanceExistingStyles, 1000);
+    
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+        clearInterval(intervalId);
+        observer.disconnect();
+    });
+
+    console.log('GitHub Gruvbox Theme with Enhanced Code View loaded');
+
+})();
