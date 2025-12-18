@@ -20,3 +20,7 @@ A small collection of userscripts for ViolentMonkey, mainly focused on blocking 
 
 - These scripts are written for personal use first.  
   Feel free to fork, modify, or adapt them to your own needs.
+
+## License 📜
+
+This project is licensed under [MIT](LICENSE) license, feel free to fork and do whatever you want with the code!
