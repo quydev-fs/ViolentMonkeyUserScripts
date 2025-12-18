@@ -10,4 +10,4 @@ Some useful (or not) userscripts made by me
 
 ## Warning ⚠️ 
 
-GooBox ("Google Gruvbox" or "Gruvboxize Google") is sightly broken due to difficulty to extract class names and IDs of elements in the [Google search](https://google.com) frontend HTML, use as you own risk
+GooBox (giving [Google](https://google.com) that cozy Gruvbox glow) is a little rickety. Trying to style Google's ever-changing code is like playing whack-a-mole with class names, so expect a few quirks. Venture forth with a sense of adventure!
