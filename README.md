@@ -23,4 +23,4 @@ A small collection of userscripts for ViolentMonkey, mainly focused on blocking 
 
 ## License 📜
 
-This project is licensed under [MIT](LICENSE) license, feel free to fork and do whatever you want with the code!
+This project is licensed under the [MIT License](LICENSE), feel free to fork and do whatever you want with the code!
