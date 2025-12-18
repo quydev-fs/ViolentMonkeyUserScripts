@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Google AI Mode Gruvbox Theme
 // @namespace    http://tampermonkey.net/
-// @version      2.0
-// @description  Apply Gruvbox dark theme to Google with AI mode support
+// @version      2.2
+// @description  Force Gruvbox dark theme backgrounds on Google with AI mode support
 // @author       @quydev-fs
 // @match        https://www.google.com/*
 // @match        https://www.google.com/search?*
@@ -16,13 +16,13 @@
 
     // Gruvbox Dark Colors
     const gruvbox = {
-        // Backgrounds
-        bg0_h: "#1d2021",    // Darkest
-        bg0: "#282828",      // Standard
-        bg1: "#3c3836",      // Lighter
-        bg2: "#504945",      // Even lighter
-        bg3: "#665c54",      // Even more lighter
-        bg4: "#7c6f64",      // Lightest
+        // Backgrounds - Force these everywhere
+        bg0_h: "#1d2021",    // Darkest background
+        bg0: "#282828",      // Main background
+        bg1: "#3c3836",      // Secondary background
+        bg2: "#504945",      // Interactive background
+        bg3: "#665c54",      // Border color
+        bg4: "#7c6f64",      // Lightest background
         
         // Foreground
         fg: "#ebdbb2",       // Standard text
@@ -64,239 +64,478 @@
         ai_assistant: "#fabd2f",
     };
 
-    // Main styling
-    GM_addStyle(`
-        /* Global styles */
-        body, html {
+    // Create a style element with !important overrides
+    const style = document.createElement('style');
+    style.id = 'gruvbox-forced-backgrounds';
+    
+    // Force background colors on ALL elements with !important
+    style.textContent = `
+        /* === FORCE BACKGROUND COLORS ON ALL ELEMENTS === */
+        
+        /* Force backgrounds on root and body */
+        html, body {
             background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
             color: ${gruvbox.fg} !important;
-            font-family: 'Segoe UI', Roboto, sans-serif !important;
         }
         
-        /* AI Mode Container */
+        /* Force backgrounds on all divs */
+        div {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        /* Force backgrounds on all sections and articles */
+        section, article, aside, header, footer, nav, main {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        /* Force backgrounds on all containers and wrappers */
+        .container, .wrapper, .content, .main, .page, .app, .view {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        /* === SPECIFIC GOOGLE CLASSES === */
+        
+        /* Force backgrounds on ALL Google classes */
+        [class*="gb_"], /* All Google bar classes */
+        [class^="gb_"], 
+        .gLFyf, .RNNXgb, .A8SBwf, .a4bIc,
+        .tF2Cxc, .MjjYud, .g, .VwiC3b,
+        .kp-blk, .xpdopen, .ifM9O, .LGOjhe,
+        .g-menu, .erkvQe, .UjBGL,
+        .aajZCb, .lJ9FBc,
+        .spch, .spch-dlg, .spchc,
+        .hdtb-mn-hd, .hdtbItm, .hdtbUd,
+        .GOE98c, .HbX59e,
+        .pHiOh, .fbar, .uU7dJb {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        /* Interactive elements */
+        button, input, textarea, select {
+            background-color: ${gruvbox.bg1} !important;
+            background: ${gruvbox.bg1} !important;
+        }
+        
+        /* === AI MODE SPECIFIC === */
+        
+        /* AI Mode containers - force backgrounds */
         #aim-lhs-panel-threads-view-container,
         #aim-chrome-initial-inline-async-container,
         .os-s,
         .inner-container,
         .eMf8ze,
-        .m4l7Cf {
+        .m4l7Cf,
+        .tonYlb {
             background-color: ${gruvbox.ai_bg} !important;
-            color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.ai_border} !important;
+            background: ${gruvbox.ai_bg} !important;
         }
         
-        /* AI Chat Messages */
+        /* AI Chat messages */
         .OxKcRe, .PT8cT, .Ipurxf,
         .zEStpb, .LudIE, .KPdTad,
         .X1jcy, .vx3JKb {
             background-color: ${gruvbox.ai_chat_bg} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 8px !important;
-            padding: 12px !important;
-            margin: 8px 0 !important;
+            background: ${gruvbox.ai_chat_bg} !important;
         }
         
-        /* AI Input Fields */
-        #spchx, .pz5bj,
-        .OxKcRe.PT8cT.Ipurxf,
-        .LudIE {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border: 2px solid ${gruvbox.bg3} !important;
-            border-radius: 12px !important;
-            padding: 12px 16px !important;
-            font-size: 16px !important;
-        }
-        
-        .LudIE::placeholder {
-            color: ${gruvbox.fg4} !important;
-            opacity: 0.7 !important;
-        }
-        
-        /* AI Chat Bubbles */
-        .user-message, [data-role="user"] {
-            background-color: ${gruvbox.ai_user}22 !important;
-            border-left: 4px solid ${gruvbox.ai_user} !important;
-        }
-        
-        .assistant-message, [data-role="assistant"] {
-            background-color: ${gruvbox.ai_assistant}22 !important;
-            border-left: 4px solid ${gruvbox.ai_assistant} !important;
-        }
-        
-        /* AI Action Buttons */
+        /* AI Action buttons */
         [id^="actions-button-"] {
             background-color: ${gruvbox.bg2} !important;
+            background: ${gruvbox.bg2} !important;
+        }
+        
+        /* === OVERRIDE ANY BACKGROUND IMAGES === */
+        
+        * {
+            background-image: none !important;
+        }
+        
+        [style*="background-color"] {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        [style*="background:"] {
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        [style*="background-image"] {
+            background-image: none !important;
+        }
+        
+        /* === SPECIFIC BACKGROUND OVERRIDES === */
+        
+        /* Override any light backgrounds */
+        [class*="light"], [class*="white"], [class*="bg-white"] {
+            background-color: ${gruvbox.bg0} !important;
+        }
+        
+        [class*="dark"], [class*="black"], [class*="bg-dark"] {
+            background-color: ${gruvbox.bg0_h} !important;
+        }
+        
+        /* === DEEP BACKGROUND FORCING === */
+        
+        /* Target deeply nested elements */
+        div > div,
+        div > section,
+        div > article,
+        div > aside {
+            background-color: ${gruvbox.bg0} !important;
+        }
+        
+        /* Override inline styles */
+        *[style] {
+            background-color: ${gruvbox.bg0} !important;
+        }
+        
+        /* === PREVENT TRANSPARENCY ISSUES === */
+        
+        body::before,
+        body::after,
+        div::before,
+        div::after {
+            background-color: transparent !important;
+        }
+        
+        /* === FORCE TEXT COLORS === */
+        
+        * {
             color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-            padding: 8px 12px !important;
-            margin: 4px !important;
-            transition: all 0.2s ease !important;
         }
         
-        [id^="actions-button-"]:hover {
-            background-color: ${gruvbox.bg3} !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+        a, [href] {
+            color: ${gruvbox.blue} !important;
         }
         
-        /* Main Search Components */
+        a:visited {
+            color: ${gruvbox.purple} !important;
+        }
+        
+        a:hover {
+            color: ${gruvbox.aqua} !important;
+        }
+        
+        /* === BORDER OVERRIDES === */
+        
+        * {
+            border-color: ${gruvbox.bg3} !important;
+        }
+    `;
+    
+    // Insert style at the very beginning
+    if (document.head) {
+        document.head.insertBefore(style, document.head.firstChild);
+    } else {
+        document.documentElement.appendChild(style);
+    }
+
+    // Main styling with comprehensive coverage
+    GM_addStyle(`
+        /* === MAIN GRUVBOX THEME === */
+        
+        /* Force background on ALL elements */
+        * {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+            color: ${gruvbox.fg} !important;
+            border-color: ${gruvbox.bg3} !important;
+        }
+        
+        /* Root elements */
+        html, body, :root {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} linear-gradient(${gruvbox.bg0}, ${gruvbox.bg0_h}) !important;
+        }
+        
+        /* Remove any background images */
+        body {
+            background-image: none !important;
+        }
+        
+        /* Force background on containers */
+        .container, .wrapper, .content, .main {
+            background-color: ${gruvbox.bg0} !important;
+        }
+        
+        /* === GOOGLE SPECIFIC ELEMENTS === */
+        
+        /* Google search bar */
         .gLFyf, .RNNXgb, .A8SBwf, .a4bIc {
             background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
             border: 2px solid ${gruvbox.bg3} !important;
             border-radius: 24px !important;
+            color: ${gruvbox.fg} !important;
         }
         
-        /* Search Results */
-        .tF2Cxc, .MjjYud, .g,
-        .ezI2Eb, .tGKKnb {
+        /* Search results */
+        .tF2Cxc, .MjjYud, .g {
             background-color: ${gruvbox.bg0} !important;
             border: 1px solid ${gruvbox.bg2} !important;
             border-radius: 8px !important;
             padding: 16px !important;
             margin-bottom: 16px !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
         }
         
-        .tF2Cxc:hover, .MjjYud:hover, .g:hover {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg3} !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-            transform: translateY(-2px) !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        /* Links and Titles */
-        a, .LC20lb, .iUh30, .TbwUpd,
-        .NJjxre, .yuRUbf, .DKV0Md {
-            color: ${gruvbox.blue} !important;
-            text-decoration: none !important;
-        }
-        
-        a:hover, .LC20lb:hover {
-            color: ${gruvbox.aqua} !important;
-            text-decoration: underline !important;
-        }
-        
-        a:visited, .TbwUpd, .VuuXrf {
-            color: ${gruvbox.purple} !important;
-        }
-        
-        /* URL Display */
-        .TbwUpd, .qzEoUe, .iUh30 {
-            color: ${gruvbox.green} !important;
-            font-size: 14px !important;
-        }
-        
-        /* Snippets */
-        .VwiC3b, .MUxGbd, .lyLwlc,
-        .st, .IsZvec {
-            color: ${gruvbox.fg2} !important;
-            line-height: 1.6 !important;
-        }
-        
-        /* Buttons */
-        button, .EzVRq, .HDKvTb,
-        .Tg7LZd, .gb_Dd, .gb_Qf,
-        .gb_Xf, .gb_vd, .C7GGae {
-            background-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-            padding: 8px 16px !important;
-            font-weight: 500 !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        button:hover, .gb_Dd:hover, .gb_Qf:hover {
-            background-color: ${gruvbox.bg3} !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
-        }
-        
-        /* Primary Action Buttons */
-        .gNO89b, .Tg7LZd, .UUbT9,
-        .aajZCb, .GqKJc, .CcNe6e {
-            background-color: ${gruvbox.blue} !important;
-            color: ${gruvbox.bg0} !important;
-            border: none !important;
-        }
-        
-        /* Navigation and Header */
-        .gb_0, .gb_1, .gb_A, .gb_B,
-        .gb_D, .gb_F, .gb_J, .gb_L,
-        .gb_M, .gb_U, .gb_Z, .gb_y,
-        .gb_z, #gb, .appbar, #appbar {
+        /* Google header/nav */
+        #gb, .gb, .appbar, #appbar {
             background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg} !important;
             border-bottom: 1px solid ${gruvbox.bg2} !important;
         }
         
-        /* Navigation Links */
-        .gb_B, .gb_0a, .gb_R, .gb_S,
-        .Wj9PNe, .C6AK7c {
-            color: ${gruvbox.fg} !important;
-        }
+        /* === AI MODE ELEMENTS === */
         
-        .gb_B:hover, .gb_0a:hover {
-            color: ${gruvbox.blue} !important;
-            background-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* Search Tabs */
-        .hdtb-mn-hd, .hdtbItm, .hdtbUd,
-        .GOE98c, .HbX59e, .hdtb-tl-sel {
+        /* tonYlb class - force background */
+        .tonYlb {
             background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.bg3} !important;
-        }
-        
-        .hdtb-tl-sel {
-            background-color: ${gruvbox.blue} !important;
-            color: ${gruvbox.bg0} !important;
-        }
-        
-        /* Cards and Knowledge Panels */
-        .kp-blk, .xpdopen, .ifM9O,
-        .LGOjhe, .VjDLd, .ILfuVd,
-        .NFQFxe, .g-blk, .knowledge-panel {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
             border: 1px solid ${gruvbox.bg3} !important;
             border-radius: 8px !important;
-            padding: 16px !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            padding: 12px !important;
+            margin: 8px 0 !important;
         }
         
-        /* Images in Results */
-        [id^="img-"], .rg_i, .IVvPP,
-        .img_large, .img_medium {
-            border: 2px solid ${gruvbox.bg2} !important;
+        /* AI containers */
+        .os-s, .inner-container, .eMf8ze {
+            background-color: ${gruvbox.ai_bg} !important;
+            border: 1px solid ${gruvbox.ai_border} !important;
+        }
+        
+        /* AI chat messages */
+        .OxKcRe, .PT8cT, .Ipurxf {
+            background-color: ${gruvbox.ai_chat_bg} !important;
+            border: 1px solid ${gruvbox.bg2} !important;
             border-radius: 8px !important;
-            background-color: ${gruvbox.bg1} !important;
         }
         
-        [id^="img-"]:hover, .rg_i:hover {
-            border-color: ${gruvbox.blue} !important;
-            box-shadow: 0 4px 12px rgba(131, 165, 152, 0.2) !important;
-        }
-        
-        /* Voice Search */
-        .spch, .spch-dlg, .spchc,
-        #spch, #spch-dlg, #spchc {
-            background-color: ${gruvbox.bg1} !important;
+        /* AI action buttons */
+        [id^="actions-button-"] {
+            background-color: ${gruvbox.bg2} !important;
+            border: 1px solid ${gruvbox.bg3} !important;
+            border-radius: 6px !important;
             color: ${gruvbox.fg} !important;
-            border: 2px solid ${gruvbox.bg3} !important;
-            border-radius: 16px !important;
         }
         
-        .hb2Smf, .XDyW0e, .spchx {
-            color: ${gruvbox.yellow} !important;
+        /* === FORCE BACKGROUND ON SPECIFIC CLASSES === */
+        
+        /* List of classes to force backgrounds on */
+        .AGtNEf, .AU4m8b, .AmvCf, .Bvfzle,
+        .CfiFM, .GpOaz, .HbX59e, .iRQHZe,
+        .j8c53, .lNKMrf, .nQpXxb, .txxDge,
+        .IKA0je, .iQXTJe, .zEStpb, .LudIE,
+        .KPdTad, .X1jcy, .vx3JKb, .pz5bj,
+        .spchx, .OxKcRe, .PT8cT, .Ipurxf {
+            background-color: ${gruvbox.bg1} !important;
         }
         
+        /* === OVERRIDE ANY REMAINING BACKGROUNDS === */
+        
+        /* Target elements by style attribute */
+        [style*="background-color: white"],
+        [style*="background: white"],
+        [style*="background-color: #fff"],
+        [style*="background: #fff"],
+        [style*="background-color: #ffffff"],
+        [style*="background: #ffffff"] {
+            background-color: ${gruvbox.bg0} !important;
+            background: ${gruvbox.bg0} !important;
+        }
+        
+        [style*="background-color: light"],
+        [style*="background: light"] {
+            background-color: ${gruvbox.bg1} !important;
+            background: ${gruvbox.bg1} !important;
+        }
+        
+        /* === HANDLE GRADIENTS === */
+        
+        [style*="gradient"] {
+            background: ${gruvbox.bg0} !important;
+            background-image: none !important;
+        }
+        
+        /* === FORCE BACKGROUND ON SVG AND CANVAS === */
+        
+        svg, canvas, img {
+            background-color: ${gruvbox.bg1} !important;
+        }
+        
+        /* === CUSTOM PROPERTY OVERRIDES === */
+        
+        :root {
+            --background-color: ${gruvbox.bg0} !important;
+            --bg-color: ${gruvbox.bg0} !important;
+            --color-background: ${gruvbox.bg0} !important;
+            --google-gray-50: ${gruvbox.bg0} !important;
+            --google-gray-100: ${gruvbox.bg1} !important;
+            --google-gray-900: ${gruvbox.bg0_h} !important;
+        }
+        
+        /* === SCROLLBAR STYLING === */
+        
+        ::-webkit-scrollbar {
+            background-color: ${gruvbox.bg1} !important;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background-color: ${gruvbox.bg3} !important;
+        }
+        
+        /* === SELECTION === */
+        
+        ::selection {
+            background-color: ${gruvbox.selection} !important;
+            color: ${gruvbox.fg0} !important;
+        }
+        
+        /* === FOCUS STATES === */
+        
+        :focus {
+            outline: 2px solid ${gruvbox.blue} !important;
+            background-color: ${gruvbox.bg1} !important;
+        }
+        
+        /* === MOBILE OPTIMIZATION === */
+        
+        @media (max-width: 768px) {
+            * {
+                background-color: ${gruvbox.bg0} !important;
+            }
+            
+            .tF2Cxc, .MjjYud, .g {
+                background-color: ${gruvbox.bg0} !important;
+                padding: 12px !important;
+            }
+            
+            .tonYlb {
+                background-color: ${gruvbox.bg1} !important;
+                padding: 8px !important;
+            }
+        }
+    `);
+
+    // Function to aggressively force background colors
+    function forceBackgroundColors() {
+        // Force background on all elements
+        const allElements = document.querySelectorAll('*');
+        
+        allElements.forEach(el => {
+            // Skip if already processed
+            if (el.hasAttribute('data-gruvbox-forced')) return;
+            
+            // Force background color
+            el.style.backgroundColor = gruvbox.bg0;
+            el.style.background = gruvbox.bg0;
+            el.style.color = gruvbox.fg;
+            
+            // Handle specific element types
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                el.style.backgroundColor = gruvbox.bg1;
+            }
+            
+            if (el.tagName === 'BUTTON') {
+                el.style.backgroundColor = gruvbox.bg2;
+            }
+            
+            // Handle Google specific classes
+            if (el.className && typeof el.className === 'string') {
+                const className = el.className;
+                
+                // Force background on tonYlb
+                if (className.includes('tonYlb')) {
+                    el.style.backgroundColor = gruvbox.bg1;
+                }
+                
+                // Force background on AI mode elements
+                if (className.includes('OxKcRe') || className.includes('PT8cT') || 
+                    className.includes('Ipurxf') || className.includes('zEStpb')) {
+                    el.style.backgroundColor = gruvbox.ai_chat_bg;
+                }
+                
+                // Force background on action buttons
+                if (el.id && el.id.startsWith('actions-button-')) {
+                    el.style.backgroundColor = gruvbox.bg2;
+                }
+            }
+            
+            // Remove background images
+            el.style.backgroundImage = 'none';
+            
+            // Mark as processed
+            el.setAttribute('data-gruvbox-forced', 'true');
+        });
+        
+        // Force background on body and html specifically
+        document.documentElement.style.backgroundColor = gruvbox.bg0;
+        document.documentElement.style.background = gruvbox.bg0;
+        document.body.style.backgroundColor = gruvbox.bg0;
+        document.body.style.background = gruvbox.bg0;
+        document.body.style.backgroundImage = 'none';
+        
+        // Force background on any iframes
+        document.querySelectorAll('iframe').forEach(iframe => {
+            try {
+                if (iframe.contentDocument && iframe.contentDocument.body) {
+                    iframe.contentDocument.body.style.backgroundColor = gruvbox.bg0;
+                    iframe.contentDocument.body.style.background = gruvbox.bg0;
+                }
+            } catch (e) {
+                // Cross-origin iframe, can't access
+            }
+        });
+        
+        // Force background on shadow DOM elements
+        document.querySelectorAll('*').forEach(el => {
+            if (el.shadowRoot) {
+                el.shadowRoot.querySelectorAll('*').forEach(shadowEl => {
+                    shadowEl.style.backgroundColor = gruvbox.bg0;
+                    shadowEl.style.background = gruvbox.bg0;
+                });
+            }
+        });
+    }
+
+    // Apply immediately and aggressively
+    forceBackgroundColors();
+    
+    // Apply continuously to catch new elements
+    const forceInterval = setInterval(forceBackgroundColors, 100);
+    
+    // Mutation observer to catch new elements
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(() => {
+            forceBackgroundColors();
+        });
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false
+    });
+    
+    // Also observe the entire document
+    observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+    
+    // Apply on page load and DOM changes
+    document.addEventListener('DOMContentLoaded', forceBackgroundColors);
+    window.addEventListener('load', forceBackgroundColors);
+    
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+        clearInterval(forceInterval);
+        observer.disconnect();
+    });
+
+})();
         /* Icons */
         .z1asCe, .ExCKkf, .wM6W7d,
         .M2vV3, .goxjub, .gb_L {
