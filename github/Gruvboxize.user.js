@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         GitHub Gruvbox Theme
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/
 // @version      1.0
 // @description  Apply Gruvbox dark theme to GitHub
 // @author       @quydev-fs
