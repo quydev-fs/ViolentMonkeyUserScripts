@@ -1,13 +1,22 @@
 # ViolentMonkey User Scripts
-Some useful (or not) userscripts made by me
+
+A small collection of userscripts for ViolentMonkey, mainly focused on blocking distractions and tweaking web UIs to my liking.
 
 ## Scripts 👩‍💻
-[TikTok Blocker](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/tiktok/tiktok-blocker.user.js) - by me
 
-[YouTube Short Hider](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/youtube/short-blocker-mobile.user.js) - by me
+- **[TikTok Blocker](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/tiktok/tiktok-blocker.user.js)**  
+  Completely blocks TikTok before its JavaScript even starts running.
 
-[GooBox](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/google/Gruvboxize.user.js) - by me
+- **[YouTube Shorts Hider (Mobile)](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/youtube/short-blocker-mobile.user.js)**  
+  Hides YouTube Shorts elements on the mobile web interface.
 
-## Warning ⚠️ 
+- **[GooBox](https://github.com/quydev-fs/ViolentMonkeyUserScripts/blob/main/google/Gruvboxize.user.js)**  
+  Applies a Gruvbox-inspired theme to Google Search.
 
-GooBox (giving [Google](https://google.com) that cozy Gruvbox glow) is a little rickety. Trying to style Google's ever-changing code is like playing whack-a-mole with class names, so expect a few quirks. Venture forth with a sense of adventure!
+## Notes ⚠️
+
+- **GooBox** targets Google Search, which uses heavily obfuscated and frequently changing markup.  
+  Expect occasional breakage when Google updates their frontend. This is normal and unavoidable.
+
+- These scripts are written for personal use first.  
+  Feel free to fork, modify, or adapt them to your own needs.
