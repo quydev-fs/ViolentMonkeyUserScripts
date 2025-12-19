@@ -1,642 +1,786 @@
 // ==UserScript==
-// @name         GitHub Gruvbox Theme - Perfect Alignment
-// @namespace    https://github.com/quydev-fs/ViolentMonkeyUserScripts
-// @version      1.7
-// @description  Apply Gruvbox dark theme to GitHub with perfect code alignment
-// @author       You
+// @name         GitHub Gruvbox Dark (Clean, No JS Hacks)
+// @namespace    https://github.com/quydev-fs/ViolentMonkeyUserScripts/
+// @version      2.1
+// @author       quydev-fs
+// @description  Gruvbox Dark for GitHub - CSS only, stable on Kiwi + ViolentMonkey
 // @match        https://github.com/*
-// @match        https://*.github.com/*
 // @grant        GM_addStyle
 // @run-at       document-start
 // ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+  'use strict';
 
-    // Gruvbox Dark Colors
-    const gruvbox = {
-        // Backgrounds
-        bg0_h: "#1d2021",
-        bg0: "#282828",
-        bg1: "#3c3836",
-        bg2: "#504945",
-        bg3: "#665c54",
-        bg4: "#7c6f64",
-        
-        // Foreground
-        fg: "#ebdbb2",
-        fg0: "#fbf1c7",
-        fg1: "#ebdbb2",
-        fg2: "#d5c4a1",
-        fg3: "#bdae93",
-        fg4: "#a89984",
-        
-        // Colors
-        red: "#fb4934",
-        green: "#b8bb26",
-        yellow: "#fabd2f",
-        blue: "#83a598",
-        purple: "#d3869b",
-        aqua: "#8ec07c",
-        orange: "#fe8019",
-        gray: "#928374",
-        
-        // Bright variants
-        bright_red: "#cc241d",
-        bright_green: "#98971a",
-        bright_yellow: "#d79921",
-        bright_blue: "#458588",
-        bright_purple: "#b16286",
-        bright_aqua: "#689d6a",
-        bright_orange: "#d65d0e",
-        
-        // UI Specific
-        selection: "#45858833",
-        border: "#3c3836",
-    };
-
-    // Main styling - THÊM ALIGNMENT FIXES
-    GM_addStyle(`
-        /* === RESET POSITIONS FOR ALIGNMENT === */
-        
-        /* Đảm bảo tất cả code elements có position relative */
-        .react-code-file-contents[data-gruvbox-styled="true"],
-        .react-code-lines[data-gruvbox-styled="true"],
-        .blob-wrapper[data-gruvbox-styled="true"] {
-            position: relative !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            transform: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        /* Fix line alignment */
-        .react-file-line[data-gruvbox-styled="true"] {
-            display: table-row !important;
-            position: static !important;
-            width: 100% !important;
-        }
-        
-        /* Fix line number cells */
-        [data-line-number][data-gruvbox-styled="true"],
-        .react-line-number[data-gruvbox-styled="true"],
-        .blob-num[data-gruvbox-styled="true"] {
-            display: table-cell !important;
-            position: static !important;
-            vertical-align: top !important;
-            text-align: right !important;
-            white-space: nowrap !important;
-            width: 1% !important;
-            min-width: 50px !important;
-            padding: 0 10px !important;
-            box-sizing: border-box !important;
-        }
-        
-        /* Fix code text cells */
-        .react-code-text[data-gruvbox-styled="true"],
-        .blob-code[data-gruvbox-styled="true"],
-        .blob-code-inner[data-gruvbox-styled="true"] {
-            display: table-cell !important;
-            position: static !important;
-            vertical-align: top !important;
-            text-align: left !important;
-            width: 99% !important;
-            padding-left: 10px !important;
-            box-sizing: border-box !important;
-        }
-        
-        /* Đảm bảo table layout đúng */
-        .react-code-lines[data-gruvbox-styled="true"] {
-            display: table !important;
-            width: 100% !important;
-            border-collapse: collapse !important;
-            table-layout: fixed !important;
-        }
-        
-        /* Ẩn unstyled code hoàn toàn */
-        .react-code-file-contents:not([data-gruvbox-styled]),
-        .react-code-lines:not([data-gruvbox-styled]),
-        .react-file-line:not([data-gruvbox-styled]),
-        .react-code-text:not([data-gruvbox-styled]),
-        [data-line-number]:not([data-gruvbox-styled]),
-        .react-line-number:not([data-gruvbox-styled]),
-        .blob-wrapper:not([data-gruvbox-styled]),
-        .blob-code:not([data-gruvbox-styled]),
-        .blob-code-inner:not([data-gruvbox-styled]),
-        .blob-num:not([data-gruvbox-styled]) {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            display: none !important;
-        }
-        
-        /* Hiện styled code với đúng layout */
-        .react-code-file-contents[data-gruvbox-styled="true"],
-        .react-code-lines[data-gruvbox-styled="true"],
-        .blob-wrapper[data-gruvbox-styled="true"] {
-            opacity: 1 !important;
-            visibility: visible !important;
-            display: block !important;
-        }
-        
-        .react-file-line[data-gruvbox-styled="true"],
-        [data-line-number][data-gruvbox-styled="true"],
-        .react-line-number[data-gruvbox-styled="true"],
-        .blob-num[data-gruvbox-styled="true"],
-        .react-code-text[data-gruvbox-styled="true"],
-        .blob-code[data-gruvbox-styled="true"],
-        .blob-code-inner[data-gruvbox-styled="true"] {
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-        
-        /* =================================================================
-           CODE VIEW STYLES - VỚI ALIGNMENT
-           ================================================================= */
-        
-        /* Main containers */
-        .react-code-file-contents {
-            background-color: ${gruvbox.bg0_h};
-            color: ${gruvbox.fg};
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 12px;
-            line-height: 20px;
-            border: 1px solid ${gruvbox.bg2};
-            border-radius: 6px;
-            overflow: auto;
-        }
-        
-        .react-code-lines {
-            background-color: ${gruvbox.bg0_h};
-            color: ${gruvbox.fg};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-        
-        /* Line numbers */
-        [data-line-number],
-        .react-line-number {
-            background-color: ${gruvbox.bg0};
-            color: ${gruvbox.fg3};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-            border-right: 1px solid ${gruvbox.bg2};
-            user-select: none;
-            -webkit-user-select: none;
-            cursor: default;
-        }
-        
-        /* Code text */
-        .react-file-line {
-            background-color: ${gruvbox.bg0_h};
-            color: ${gruvbox.fg};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-        
-        .react-code-text {
-            color: ${gruvbox.fg};
-            background-color: ${gruvbox.bg0_h};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-            white-space: pre;
-            word-break: normal;
-            word-wrap: normal;
-            overflow-wrap: normal;
-        }
-        
-        /* Blob styles (GitHub classic) */
-        .blob-wrapper {
-            background-color: ${gruvbox.bg0_h};
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 12px;
-            line-height: 20px;
-        }
-        
-        .blob-code,
-        .blob-code-inner {
-            background-color: ${gruvbox.bg0_h};
-            color: ${gruvbox.fg};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-            white-space: pre;
-        }
-        
-        .blob-num {
-            background-color: ${gruvbox.bg0};
-            color: ${gruvbox.fg3};
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-            border-color: ${gruvbox.bg2};
-            user-select: none;
-        }
-        
-        /* Syntax highlighting */
-        .pl-c,
-        .pl-c1 {
-            color: ${gruvbox.gray};
-            font-style: italic;
-        }
-        
-        .pl-k,
-        .pl-kos {
-            color: ${gruvbox.red};
-            font-weight: bold;
-        }
-        
-        .pl-s,
-        .pl-s1,
-        .pl-pds {
-            color: ${gruvbox.green};
-        }
-        
-        .pl-v,
-        .pl-en {
-            color: ${gruvbox.blue};
-        }
-        
-        .pl-e,
-        .pl-ent {
-            color: ${gruvbox.yellow};
-        }
-        
-        .pl-smi {
-            color: ${gruvbox.purple};
-        }
-        
-        /* =================================================================
-           GENERAL STYLES
-           ================================================================= */
-        
-        body, html {
-            background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        .page-responsive {
-            background-color: ${gruvbox.bg0} !important;
-        }
-        
-        /* ... (giữ nguyên các styles khác) ... */
-        
-        /* Ngăn animations */
-        .react-code-file-contents,
-        .react-code-lines,
-        .react-file-line,
-        .blob-wrapper {
-            transition: none !important;
-            animation: none !important;
-        }
-    `);
-
-    // Function để fix alignment
-    function fixCodeAlignment() {
-        console.log('GitHub Gruvbox: Fixing code alignment');
-        
-        // Đảm bảo container có đúng layout
-        const mainContainers = document.querySelectorAll(
-            '.react-code-file-contents[data-gruvbox-styled="true"], ' +
-            '.blob-wrapper[data-gruvbox-styled="true"]'
-        );
-        
-        mainContainers.forEach(container => {
-            // Reset position
-            container.style.position = 'relative';
-            container.style.top = '0';
-            container.style.left = '0';
-            container.style.right = '0';
-            container.style.bottom = '0';
-            container.style.transform = 'none';
-            container.style.margin = '0';
-            container.style.padding = '0';
-            container.style.display = 'block';
-            container.style.overflow = 'auto';
-            
-            // Đảm bảo font và line height
-            container.style.fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-            container.style.fontSize = '12px';
-            container.style.lineHeight = '20px';
-        });
-        
-        // Fix line containers
-        const lineContainers = document.querySelectorAll(
-            '.react-code-lines[data-gruvbox-styled="true"]'
-        );
-        
-        lineContainers.forEach(container => {
-            // Set as table for proper alignment
-            container.style.display = 'table';
-            container.style.width = '100%';
-            container.style.borderCollapse = 'collapse';
-            container.style.tableLayout = 'fixed';
-        });
-        
-        // Fix individual lines
-        const lines = document.querySelectorAll(
-            '.react-file-line[data-gruvbox-styled="true"]'
-        );
-        
-        lines.forEach(line => {
-            line.style.display = 'table-row';
-            line.style.position = 'static';
-            line.style.width = '100%';
-        });
-        
-        // Fix line numbers
-        const lineNumbers = document.querySelectorAll(
-            '[data-line-number][data-gruvbox-styled="true"], ' +
-            '.react-line-number[data-gruvbox-styled="true"], ' +
-            '.blob-num[data-gruvbox-styled="true"]'
-        );
-        
-        lineNumbers.forEach(num => {
-            // Table cell layout
-            num.style.display = 'table-cell';
-            num.style.position = 'static';
-            num.style.verticalAlign = 'top';
-            num.style.textAlign = 'right';
-            num.style.whiteSpace = 'nowrap';
-            num.style.width = '1%';
-            num.style.minWidth = '50px';
-            num.style.padding = '0 10px';
-            num.style.boxSizing = 'border-box';
-            
-            // Style
-            num.style.backgroundColor = gruvbox.bg0;
-            num.style.color = gruvbox.fg3;
-            num.style.borderRight = `1px solid ${gruvbox.bg2}`;
-            num.style.fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-            num.style.fontSize = '12px';
-            num.style.lineHeight = '20px';
-            num.style.userSelect = 'none';
-            num.style.WebkitUserSelect = 'none';
-            num.style.cursor = 'default';
-        });
-        
-        // Fix code text
-        const codeTexts = document.querySelectorAll(
-            '.react-code-text[data-gruvbox-styled="true"], ' +
-            '.blob-code[data-gruvbox-styled="true"], ' +
-            '.blob-code-inner[data-gruvbox-styled="true"]'
-        );
-        
-        codeTexts.forEach(text => {
-            // Table cell layout
-            text.style.display = 'table-cell';
-            text.style.position = 'static';
-            text.style.verticalAlign = 'top';
-            text.style.textAlign = 'left';
-            text.style.width = '99%';
-            text.style.paddingLeft = '10px';
-            text.style.boxSizing = 'border-box';
-            
-            // Style
-            text.style.color = gruvbox.fg;
-            text.style.backgroundColor = gruvbox.bg0_h;
-            text.style.fontFamily = "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-            text.style.fontSize = '12px';
-            text.style.lineHeight = '20px';
-            text.style.whiteSpace = 'pre';
-            text.style.wordBreak = 'normal';
-            text.style.wordWrap = 'normal';
-            text.style.overflowWrap = 'normal';
-        });
-        
-        // Apply syntax highlighting
-        applySyntaxHighlighting();
-    }
-
-    // Function để apply syntax highlighting
-    function applySyntaxHighlighting() {
-        const syntaxMap = {
-            'pl-c': gruvbox.gray,
-            'pl-c1': gruvbox.gray,
-            'pl-k': gruvbox.red,
-            'pl-kos': gruvbox.red,
-            'pl-s': gruvbox.green,
-            'pl-s1': gruvbox.green,
-            'pl-pds': gruvbox.green,
-            'pl-v': gruvbox.blue,
-            'pl-en': gruvbox.blue,
-            'pl-e': gruvbox.yellow,
-            'pl-ent': gruvbox.yellow,
-            'pl-smi': gruvbox.purple
-        };
-        
-        Object.keys(syntaxMap).forEach(className => {
-            const elements = document.querySelectorAll(`.${className}[data-gruvbox-styled="true"]`);
-            elements.forEach(el => {
-                el.style.color = syntaxMap[className];
-                
-                // Thêm font styles cho keywords và comments
-                if (className === 'pl-c' || className === 'pl-c1') {
-                    el.style.fontStyle = 'italic';
-                }
-                if (className === 'pl-k' || className === 'pl-kos') {
-                    el.style.fontWeight = 'bold';
-                }
-            });
-        });
-    }
-
-    // Function chính để apply styles
-    function applyCodeViewStyles() {
-        console.log('GitHub Gruvbox: Applying styles');
-        
-        // Mark và style tất cả code elements
-        const codeSelectors = [
-            '.react-code-file-contents',
-            '.react-code-lines',
-            '.react-code-line-contents-no-virtualization',
-            '.react-file-line',
-            '.react-code-text',
-            '[data-line-number]',
-            '.react-line-number',
-            '.blob-wrapper',
-            '.blob-code',
-            '.blob-code-inner',
-            '.blob-num'
-        ];
-        
-        codeSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                if (!element.hasAttribute('data-gruvbox-styled')) {
-                    element.setAttribute('data-gruvbox-styled', 'true');
-                }
-            });
-        });
-        
-        // Apply alignment fixes
-        setTimeout(fixCodeAlignment, 0);
-        
-        // Force reflow
-        requestAnimationFrame(() => {
-            fixCodeAlignment();
-            applySyntaxHighlighting();
-        });
-    }
-
-    // Function để apply general styles
-    function applyGeneralStyles() {
-        document.body.style.backgroundColor = gruvbox.bg0;
-        document.body.style.color = gruvbox.fg;
-        
-        // Apply to page-responsive
-        const pageResp = document.querySelector('.page-responsive');
-        if (pageResp) {
-            pageResp.style.backgroundColor = gruvbox.bg0;
-        }
-    }
-
-    // Khởi động theme
-    function initializeTheme() {
-        console.log('GitHub Gruvbox: Initializing with alignment fixes');
-        
-        // Bước 1: Ẩn unstyled code ngay lập tức
-        const hideUnstyled = () => {
-            const unstyledSelectors = [
-                '.react-code-file-contents:not([data-gruvbox-styled])',
-                '.react-code-lines:not([data-gruvbox-styled])',
-                '.blob-wrapper:not([data-gruvbox-styled])'
-            ];
-            
-            unstyledSelectors.forEach(selector => {
-                const elements = document.querySelectorAll(selector);
-                elements.forEach(el => {
-                    el.style.opacity = '0';
-                    el.style.visibility = 'hidden';
-                    el.style.display = 'none';
-                });
-            });
-        };
-        
-        // Bước 2: Apply styles và alignment
-        const applyAllStyles = () => {
-            applyGeneralStyles();
-            applyCodeViewStyles();
-        };
-        
-        // Execute
-        hideUnstyled();
-        setTimeout(applyAllStyles, 10);
-        
-        // Listeners
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                hideUnstyled();
-                setTimeout(applyAllStyles, 10);
-            });
-        }
-        
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                hideUnstyled();
-                applyAllStyles();
-            }, 100);
-        });
-    }
-
-    // Start
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeTheme);
-    } else {
-        initializeTheme();
-    }
+  const c = {
+    // Backgrounds
+    bg0_h: "#1d2021",
+    bg0: "#282828",
+    bg1: "#3c3836",
+    bg2: "#504945",
+    bg3: "#665c54",
+    bg4: "#7c6f64",
     
-    // Mutation observer cho alignment fixes
-    const alignmentObserver = new MutationObserver((mutations) => {
-        let needsAlignmentFix = false;
-        
-        mutations.forEach((mutation) => {
-            if (mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1) {
-                        // Check for code elements
-                        if (node.matches && (
-                            node.matches('.react-code-file-contents, .react-code-lines, .blob-wrapper') ||
-                            node.querySelector('.react-code-file-contents, .react-code-lines, .blob-wrapper')
-                        )) {
-                            needsAlignmentFix = true;
-                            
-                            // Hide unstyled immediately
-                            if (node.matches && !node.hasAttribute('data-gruvbox-styled')) {
-                                node.style.opacity = '0';
-                                node.style.visibility = 'hidden';
-                                node.style.display = 'none';
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Also check for style changes that might affect alignment
-            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                const target = mutation.target;
-                if (target.hasAttribute('data-gruvbox-styled')) {
-                    needsAlignmentFix = true;
-                }
-            }
-        });
-        
-        if (needsAlignmentFix) {
-            // Apply fixes with proper timing
-            setTimeout(() => {
-                applyCodeViewStyles();
-                fixCodeAlignment();
-            }, 0);
-            
-            requestAnimationFrame(() => {
-                fixCodeAlignment();
-            });
-        }
-    });
+    // Foreground
+    fg: "#ebdbb2",
+    fg0: "#fbf1c7",
+    fg1: "#ebdbb2",
+    fg2: "#d5c4a1",
+    fg3: "#bdae93",
+    fg4: "#a89984",
     
-    // Start observing
-    setTimeout(() => {
-        alignmentObserver.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class']
-        });
-        console.log('GitHub Gruvbox: Alignment observer started');
-    }, 1500);
+    // Colors
+    red: "#fb4934",
+    green: "#b8bb26",
+    yellow: "#fabd2f",
+    blue: "#83a598",
+    purple: "#d3869b",
+    aqua: "#8ec07c",
+    orange: "#fe8019",
+    gray: "#928374",
     
-    // SPA navigation detection
-    let lastUrl = location.href;
-    setInterval(() => {
-        if (lastUrl !== location.href) {
-            lastUrl = location.href;
-            console.log('GitHub Gruvbox: Page changed, reapplying alignment');
-            
-            setTimeout(() => {
-                // Re-hide unstyled
-                document.querySelectorAll(
-                    '.react-code-file-contents:not([data-gruvbox-styled]), ' +
-                    '.react-code-lines:not([data-gruvbox-styled]), ' +
-                    '.blob-wrapper:not([data-gruvbox-styled])'
-                ).forEach(el => {
-                    el.style.opacity = '0';
-                    el.style.visibility = 'hidden';
-                    el.style.display = 'none';
-                });
-                
-                // Reapply
-                applyCodeViewStyles();
-                setTimeout(fixCodeAlignment, 50);
-            }, 200);
-        }
-    }, 1000);
+    // Bright variants
+    bright_red: "#cc241d",
+    bright_green: "#98971a",
+    bright_yellow: "#d79921",
+    bright_blue: "#458588",
+    bright_purple: "#b16286",
+    bright_aqua: "#689d6a",
+    bright_orange: "#d65d0e",
     
-    console.log('GitHub Gruvbox Theme loaded with perfect alignment!');
+    // UI Specific
+    selection: "#45858855",
+    border: "#3c3836",
+  };
 
+  GM_addStyle(`
+/* ================= GLOBAL ================= */
+html, body {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+/* Page responsive - từ homepage JSON */
+.page-responsive {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+.logged-in {
+  background: ${c.bg0} !important;
+}
+
+.env-production {
+  background: ${c.bg0} !important;
+}
+
+/* Application main container */
+.application-main,
+main {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+/* Repository content */
+.repository-content {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+/* Dashboard */
+.dashboard,
+.dashboard-route {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+/* ================= HEADER ================= */
+.AppHeader,
+header,
+[data-testid="AppHeader"] {
+  background: ${c.bg0} !important;
+  border-bottom: 1px solid ${c.bg2} !important;
+  color: ${c.fg} !important;
+}
+
+.AppHeader-globalBar {
+  background: ${c.bg0} !important;
+}
+
+.AppHeader-context {
+  background: ${c.bg0} !important;
+}
+
+.AppHeader-logo {
+  filter: invert(0.9) hue-rotate(180deg) brightness(1.2) saturate(0.8) !important;
+}
+
+/* ================= BUTTONS ================= */
+.AppHeader-button,
+.Button,
+.btn {
+  background: ${c.bg2} !important;
+  color: ${c.fg} !important;
+  border: 1px solid ${c.bg3} !important;
+  border-radius: 6px !important;
+}
+
+.AppHeader-button:hover,
+.Button:hover,
+.btn:hover {
+  background: ${c.bg3} !important;
+  border-color: ${c.bg4} !important;
+}
+
+.Button--primary,
+.btn-primary {
+  background: ${c.blue} !important;
+  color: ${c.bg0} !important;
+  border-color: ${c.blue} !important;
+}
+
+.Button--secondary,
+.btn-secondary {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.Button--invisible,
+.btn-invisible {
+  background: transparent !important;
+  color: ${c.fg} !important;
+  border-color: transparent !important;
+}
+
+/* ================= SEARCH ================= */
+.AppHeader-search,
+.search-input,
+.form-control {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border: 2px solid ${c.bg3} !important;
+  border-radius: 6px !important;
+}
+
+.AppHeader-search:focus,
+.search-input:focus {
+  border-color: ${c.blue} !important;
+  box-shadow: 0 0 0 3px ${c.blue}33 !important;
+}
+
+/* ================= BOX COMPONENTS ================= */
+.Box {
+  background: ${c.bg1} !important;
+  border: 1px solid ${c.bg2} !important;
+  color: ${c.fg} !important;
+  border-radius: 6px !important;
+}
+
+.Box-body {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+}
+
+.Box-header {
+  background: ${c.bg0_h} !important;
+  border-bottom: 1px solid ${c.bg2} !important;
+  color: ${c.fg} !important;
+}
+
+.Box-title {
+  color: ${c.fg} !important;
+}
+
+.Box--overlay {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg3} !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4) !important;
+}
+
+.Box-btn-octicon {
+  background: transparent !important;
+  color: ${c.fg4} !important;
+}
+
+.Box-btn-octicon:hover {
+  color: ${c.blue} !important;
+  background: ${c.bg2} !important;
+}
+
+/* ================= FEED CONTENT ================= */
+.feed-content {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border: 1px solid ${c.bg2} !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+}
+
+.feed-content:hover {
+  background: ${c.bg2} !important;
+  border-color: ${c.bg3} !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.feed-item-content {
+  background: ${c.bg1} !important;
+  border: 1px solid ${c.bg2} !important;
+  border-radius: 8px !important;
+}
+
+.feed-item-content:hover {
+  background: ${c.bg2} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.feed-background {
+  background: ${c.bg0} !important;
+}
+
+.feed-main {
+  background: ${c.bg0} !important;
+}
+
+.feed-next {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+.feed-left-sidebar {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+.feed-right-sidebar {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+/* ================= CODE VIEW ================= */
+
+/* Main code container */
+.react-code-file-contents,
+.blob-wrapper {
+  background: ${c.bg0_h} !important;
+  color: ${c.fg} !important;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace !important;
+  font-size: 12px !important;
+  line-height: 20px !important;
+  border: 1px solid ${c.bg2} !important;
+  border-radius: 6px !important;
+  overflow: auto !important;
+}
+
+/* Line numbers */
+.blob-num,
+.react-line-number,
+[data-line-number] {
+  background: ${c.bg0} !important;
+  color: ${c.fg3} !important;
+  border-right: 1px solid ${c.bg2} !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* Code text */
+.blob-code,
+.blob-code-inner,
+.react-code-text,
+.react-file-line {
+  background: ${c.bg0_h} !important;
+  color: ${c.fg} !important;
+  white-space: pre !important;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace !important;
+  font-size: 12px !important;
+  line-height: 20px !important;
+}
+
+/* ================= SYNTAX ================= */
+
+/* comments */
+.pl-c,
+.pl-c1 {
+  color: ${c.gray} !important;
+  font-style: italic !important;
+}
+
+/* keywords */
+.pl-k,
+.pl-kos {
+  color: ${c.red} !important;
+  font-weight: 600 !important;
+}
+
+/* strings */
+.pl-s,
+.pl-s1,
+.pl-pds {
+  color: ${c.green} !important;
+}
+
+/* variables / names */
+.pl-v,
+.pl-en {
+  color: ${c.blue} !important;
+}
+
+/* functions / entities */
+.pl-e,
+.pl-ent {
+  color: ${c.yellow} !important;
+}
+
+/* types */
+.pl-smi {
+  color: ${c.purple} !important;
+}
+
+/* ================= LINKS ================= */
+a,
+.Link,
+.Link--primary {
+  color: ${c.blue} !important;
+  text-decoration: none !important;
+}
+
+a:hover,
+.Link:hover {
+  color: ${c.aqua} !important;
+  text-decoration: underline !important;
+}
+
+.Link--muted {
+  color: ${c.fg3} !important;
+}
+
+.Link--secondary {
+  color: ${c.fg2} !important;
+}
+
+/* ================= INPUTS ================= */
+input,
+textarea,
+select {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border: 1px solid ${c.bg3} !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: ${c.blue} !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px ${c.blue}33 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: ${c.fg4} !important;
+  opacity: 0.7 !important;
+}
+
+.form-control {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.input-contrast {
+  background: ${c.bg0_h} !important;
+}
+
+.input-block {
+  width: 100% !important;
+}
+
+.form-actions {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+/* ================= COLOR UTILITIES ================= */
+.color-fg-default {
+  color: ${c.fg} !important;
+}
+
+.color-fg-muted {
+  color: ${c.fg3} !important;
+}
+
+.color-fg-subtle {
+  color: ${c.fg4} !important;
+}
+
+.color-fg-success {
+  color: ${c.green} !important;
+}
+
+.color-fg-on-emphasis {
+  color: ${c.bg0} !important;
+}
+
+.color-bg-default {
+  background: ${c.bg0} !important;
+}
+
+.color-bg-subtle {
+  background: ${c.bg1} !important;
+}
+
+.color-bg-accent-emphasis {
+  background: ${c.blue} !important;
+  color: ${c.bg0} !important;
+}
+
+.color-bg-transparent {
+  background: transparent !important;
+}
+
+.color-border-default {
+  border-color: ${c.bg3} !important;
+}
+
+.color-border-muted {
+  border-color: ${c.bg2} !important;
+}
+
+.color-border-subtle {
+  border-color: ${c.bg1} !important;
+}
+
+/* ================= TYPOGRAPHY ================= */
+.lh-condensed {
+  line-height: 1.25 !important;
+  color: ${c.fg} !important;
+}
+
+.lh-default {
+  line-height: 1.5 !important;
+  color: ${c.fg} !important;
+}
+
+.lh-0 {
+  line-height: 0 !important;
+}
+
+.text-bold {
+  font-weight: bold !important;
+  color: ${c.fg0} !important;
+}
+
+.text-normal {
+  font-weight: normal !important;
+  color: ${c.fg} !important;
+}
+
+.text-small {
+  font-size: 12px !important;
+  color: ${c.fg3} !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+/* ================= AVATARS ================= */
+.avatar,
+.avatar-user,
+.avatar-small {
+  border: 2px solid ${c.bg3} !important;
+  background: ${c.bg1} !important;
+}
+
+.avatar:hover {
+  border-color: ${c.blue} !important;
+  box-shadow: 0 0 0 3px ${c.blue}33 !important;
+}
+
+/* ================= ICONS ================= */
+.octicon {
+  color: ${c.fg4} !important;
+  fill: ${c.fg4} !important;
+}
+
+.octicon:hover {
+  color: ${c.blue} !important;
+  fill: ${c.blue} !important;
+}
+
+.octicon-star,
+.octicon-star-fill {
+  color: ${c.yellow} !important;
+  fill: ${c.yellow} !important;
+}
+
+.octicon-repo {
+  color: ${c.purple} !important;
+}
+
+.octicon-git-pull-request {
+  color: ${c.green} !important;
+}
+
+.octicon-issue-opened {
+  color: ${c.red} !important;
+}
+
+.octicon-search {
+  color: ${c.fg4} !important;
+}
+
+.octicon-home {
+  color: ${c.blue} !important;
+}
+
+.octicon-mark-github {
+  filter: invert(0.9) hue-rotate(180deg) brightness(1.2) saturate(0.8) !important;
+}
+
+/* ================= UNDERLINE NAV ================= */
+.UnderlineNav {
+  background: ${c.bg0} !important;
+  border-bottom-color: ${c.bg2} !important;
+}
+
+.UnderlineNav-item {
+  color: ${c.fg} !important;
+}
+
+.UnderlineNav-item.selected {
+  border-bottom-color: ${c.blue} !important;
+  color: ${c.blue} !important;
+}
+
+/* ================= ACTION LISTS ================= */
+.ActionList,
+.SelectMenu-list,
+.dropdown-menu {
+  background: ${c.bg1} !important;
+  border: 1px solid ${c.bg3} !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+}
+
+.ActionListItem,
+.SelectMenu-item,
+.dropdown-item {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  padding: 8px 12px !important;
+}
+
+.ActionListItem:hover,
+.SelectMenu-item:hover,
+.dropdown-item:hover {
+  background: ${c.bg2} !important;
+}
+
+.ActionListItem-label {
+  color: ${c.fg} !important;
+}
+
+.ActionListContent {
+  color: ${c.fg} !important;
+}
+
+.ActionListWrap {
+  background: ${c.bg1} !important;
+}
+
+.ActionListWrap--inset {
+  background: ${c.bg2} !important;
+}
+
+/* ================= OVERLAYS ================= */
+.Overlay,
+.Overlay-body,
+.Overlay-header,
+.Overlay-footer {
+  background: ${c.bg1} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.Overlay-title {
+  color: ${c.fg0} !important;
+}
+
+.Overlay-description {
+  color: ${c.fg2} !important;
+}
+
+.Overlay-closeButton {
+  color: ${c.fg4} !important;
+  background: transparent !important;
+}
+
+.Overlay-closeButton:hover {
+  color: ${c.fg} !important;
+  background: ${c.bg2} !important;
+}
+
+/* ================= MARKDOWN ================= */
+.markdown-body {
+  background: ${c.bg0} !important;
+  color: ${c.fg} !important;
+}
+
+.markdown-body pre,
+.markdown-body code {
+  background: ${c.bg0_h} !important;
+  color: ${c.fg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+.markdown-title {
+  color: ${c.fg0} !important;
+  font-weight: bold !important;
+}
+
+.comment-body {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+  color: ${c.fg} !important;
+}
+
+/* ================= FLASH MESSAGES ================= */
+.flash,
+.flash-container {
+  background: ${c.bg2} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+  border-radius: 6px !important;
+}
+
+.flash-full {
+  background: ${c.bg1} !important;
+}
+
+.flash-close {
+  color: ${c.fg4} !important;
+}
+
+.flash-close:hover {
+  color: ${c.fg} !important;
+}
+
+/* ================= PROGRESS BARS ================= */
+.Progress,
+.progress-pjax-loader {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+.Progress-item,
+.progress-pjax-loader-bar {
+  background: ${c.blue} !important;
+}
+
+/* ================= FOOTER ================= */
+footer,
+.footer {
+  background: ${c.bg0_h} !important;
+  color: ${c.fg3} !important;
+  border-top: 1px solid ${c.bg2} !important;
+}
+
+/* ================= SCROLLBARS ================= */
+::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  background: ${c.bg1} !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: ${c.bg3} !important;
+  border-radius: 6px !important;
+  border: 2px solid ${c.bg1} !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: ${c.bg4} !important;
+}
+
+::-webkit-scrollbar-track {
+  background: ${c.bg1} !important;
+  border-radius: 6px !important;
+}
+
+/* ================= SELECTION ================= */
+::selection {
+  background: ${c.selection} !important;
+  color: ${c.fg0} !important;
+}
+
+/* ================= FOCUS STATES ================= */
+:focus,
+:focus-visible {
+  outline: 2px solid ${c.blue} !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* ================= NO ANIMATION ================= */
+* {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .dashboard-sidebar,
+  .feed-left-sidebar,
+  .feed-right-sidebar {
+    background: ${c.bg0} !important;
+  }
+  
+  .feed-item-content {
+    padding: 12px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .feed-content {
+    padding: 12px !important;
+  }
+}
+
+/* ================= BADGES ================= */
+.private,
+.public {
+  background: ${c.bg2} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.private {
+  background: ${c.red}22 !important;
+  color: ${c.red} !important;
+}
+
+.public {
+  background: ${c.green}22 !important;
+  color: ${c.green} !important;
+}
+
+/* ================= REACTIONS ================= */
+.reactions-container,
+.social-reactions {
+  background: ${c.bg1} !important;
+  border-color: ${c.bg2} !important;
+}
+
+.reaction-dropdown-button {
+  background: ${c.bg2} !important;
+  color: ${c.fg} !important;
+  border-color: ${c.bg3} !important;
+}
+
+.reaction-dropdown-button:hover {
+  background: ${c.bg3} !important;
+}
+`);
 })();
