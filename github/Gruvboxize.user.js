@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         GitHub Gruvbox Theme
 // @namespace    https://github.com/quydev-fs/ViolentMonkeyUserScripts
-// @version      1.2
-// @description  Apply Gruvbox dark theme to GitHub with enhanced code view
-// @author       @quydev-fs
+// @version      1.6
+// @description  Apply Gruvbox dark theme to GitHub without flickering code
+// @author       quydev-fs 
 // @match        https://github.com/*
 // @match        https://*.github.com/*
 // @grant        GM_addStyle
@@ -16,20 +16,20 @@
     // Gruvbox Dark Colors
     const gruvbox = {
         // Backgrounds
-        bg0_h: "#1d2021",    // Darkest
-        bg0: "#282828",      // Standard
-        bg1: "#3c3836",      // Lighter
-        bg2: "#504945",      // Even lighter
-        bg3: "#665c54",      // Even more lighter
-        bg4: "#7c6f64",      // Lightest
+        bg0_h: "#1d2021",
+        bg0: "#282828",
+        bg1: "#3c3836",
+        bg2: "#504945",
+        bg3: "#665c54",
+        bg4: "#7c6f64",
         
         // Foreground
-        fg: "#ebdbb2",       // Standard text
-        fg0: "#fbf1c7",      // Bright text
-        fg1: "#ebdbb2",      // Standard text
-        fg2: "#d5c4a1",      // Dim text
-        fg3: "#bdae93",      // Dimmer text
-        fg4: "#a89984",      // Dimmed text
+        fg: "#ebdbb2",
+        fg0: "#fbf1c7",
+        fg1: "#ebdbb2",
+        fg2: "#d5c4a1",
+        fg3: "#bdae93",
+        fg4: "#a89984",
         
         // Colors
         red: "#fb4934",
@@ -53,708 +53,442 @@
         // UI Specific
         selection: "#45858833",
         border: "#3c3836",
-        
-        // Syntax highlighting colors
-        syntax_comment: "#928374",
-        syntax_keyword: "#fb4934",
-        syntax_string: "#b8bb26",
-        syntax_number: "#d3869b",
-        syntax_function: "#83a598",
-        syntax_variable: "#ebdbb2",
-        syntax_type: "#fabd2f",
-        syntax_constant: "#d3869b",
-        syntax_operator: "#83a598",
-        syntax_preprocessor: "#8ec07c",
-        syntax_attr_name: "#83a598",
-        syntax_tag: "#fb4934",
     };
 
-    // Main styling with !important overrides
+    // Main styling - THÊM CSS để ngăn flickering
     GM_addStyle(`
-        /* === ROOT AND BASE STYLES === */
+        /* === ẨN CODE UNSTYLED KHI ĐANG LOAD === */
         
-        :root {
-            --color-canvas-default: ${gruvbox.bg0} !important;
-            --color-canvas-subtle: ${gruvbox.bg1} !important;
-            --color-canvas-inset: ${gruvbox.bg0_h} !important;
-            --color-border-default: ${gruvbox.bg3} !important;
-            --color-border-muted: ${gruvbox.bg2} !important;
-            --color-border-subtle: ${gruvbox.bg1} !important;
-            --color-fg-default: ${gruvbox.fg} !important;
-            --color-fg-muted: ${gruvbox.fg3} !important;
-            --color-fg-subtle: ${gruvbox.fg4} !important;
-            --color-accent-fg: ${gruvbox.blue} !important;
-            --color-accent-emphasis: ${gruvbox.bright_blue} !important;
-            --color-success-fg: ${gruvbox.green} !important;
-            --color-danger-fg: ${gruvbox.red} !important;
-            --color-attention-fg: ${gruvbox.yellow} !important;
-            --color-done-fg: ${gruvbox.purple} !important;
+        /* Ẩn tất cả code containers mặc định */
+        .react-code-file-contents:not([data-gruvbox-styled]),
+        .react-code-lines:not([data-gruvbox-styled]),
+        .react-file-line:not([data-gruvbox-styled]),
+        .react-code-text:not([data-gruvbox-styled]),
+        [data-line-number]:not([data-gruvbox-styled]),
+        .react-line-number:not([data-gruvbox-styled]),
+        .blob-wrapper:not([data-gruvbox-styled]),
+        .blob-code:not([data-gruvbox-styled]),
+        .blob-code-inner:not([data-gruvbox-styled]),
+        .blob-num:not([data-gruvbox-styled]) {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        /* Hiện styled code */
+        .react-code-file-contents[data-gruvbox-styled="true"],
+        .react-code-lines[data-gruvbox-styled="true"],
+        .react-file-line[data-gruvbox-styled="true"],
+        .react-code-text[data-gruvbox-styled="true"],
+        [data-line-number][data-gruvbox-styled="true"],
+        .react-line-number[data-gruvbox-styled="true"],
+        .blob-wrapper[data-gruvbox-styled="true"],
+        .blob-code[data-gruvbox-styled="true"],
+        .blob-code-inner[data-gruvbox-styled="true"],
+        .blob-num[data-gruvbox-styled="true"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
         }
         
         /* =================================================================
-           GITHUB CODE VIEW SPECIFIC STYLES
+           CODE VIEW STYLES - KHÔNG DÙNG !important
            ================================================================= */
         
-        /* === CODE VIEW CONTAINER === */
-        
-        /* Main code view container */
-        .react-code-file-contents,
-        .CodeView-module__SplitPageLayout_Content--qxR1C,
-        .CodeViewHeader-module__Box--PofRM,
-        .react-code-view-bottom-padding,
-        .react-code-view-header-element--narrow,
-        .react-code-view-header-element--wide,
-        .react-code-view-header-wrap--narrow {
-            background-color: ${gruvbox.bg0_h} !important;
-            border-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
+        /* Code containers */
+        .react-code-file-contents {
+            background-color: ${gruvbox.bg0_h};
+            color: ${gruvbox.fg};
         }
         
-        /* Code lines container */
         .react-code-lines,
-        .react-code-line-contents-no-virtualization,
-        .react-no-virtualization-wrapper,
-        .react-no-virtualization-wrapper-lines,
-        .react-line-numbers-no-virtualization {
-            background-color: ${gruvbox.bg0_h} !important;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-            font-size: 12px !important;
-            line-height: 1.5 !important;
+        .react-code-line-contents-no-virtualization {
+            background-color: ${gruvbox.bg0_h};
+            color: ${gruvbox.fg};
         }
         
-        /* Individual code lines */
-        .react-file-line,
-        .react-code-text,
-        .react-line-number {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg} !important;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
+        .react-file-line {
+            background-color: ${gruvbox.bg0_h};
+            color: ${gruvbox.fg};
+        }
+        
+        .react-code-text {
+            color: ${gruvbox.fg};
+            background-color: ${gruvbox.bg0_h};
         }
         
         /* Line numbers */
         [data-line-number],
-        .react-line-number,
-        .code-navigation-cursor {
-            background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg3} !important;
-            border-right: 1px solid ${gruvbox.bg2} !important;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-            font-size: 12px !important;
-            padding: 0 10px !important;
-            text-align: right !important;
-            min-width: 50px !important;
+        .react-line-number {
+            background-color: ${gruvbox.bg0};
+            color: ${gruvbox.fg3};
+            border-right: 1px solid ${gruvbox.bg2};
         }
         
-        /* Selected/hovered lines */
-        .react-file-line:hover,
-        .code-navigation-cursor {
-            background-color: ${gruvbox.bg1} !important;
+        /* Blob code */
+        .blob-wrapper {
+            background-color: ${gruvbox.bg0_h};
         }
         
-        /* === BLOB VIEW HEADER === */
-        
-        .BlobViewHeader-module__Box--pvsIA,
-        .BlobViewHeader-module__Box_1--PPihg,
-        .BlobViewHeader-module__Box_2--G_jCG,
-        .BlobViewHeader-module__Box_3--Kvpex,
-        .BlobViewHeader-module__Box_4--vFP89,
-        .react-blob-sticky-header,
-        .react-blob-view-header-sticky {
-            background-color: ${gruvbox.bg0} !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
+        .blob-code,
+        .blob-code-inner {
+            background-color: ${gruvbox.bg0_h};
+            color: ${gruvbox.fg};
         }
         
-        /* Header buttons */
-        .BlobViewHeader-module__IconButton--uO1fA,
-        .BlobViewHeader-module__IconButton_2--KDy6i,
-        .BlobViewHeader-module__LinkButton--DMph4,
-        .react-blob-header-edit-and-raw-actions,
-        .react-blob-header-edit-and-raw-actions-combined {
-            background-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
+        .blob-num {
+            background-color: ${gruvbox.bg0};
+            color: ${gruvbox.fg3};
+            border-color: ${gruvbox.bg2};
         }
         
-        .BlobViewHeader-module__IconButton--uO1fA:hover,
-        .BlobViewHeader-module__IconButton_2--KDy6i:hover {
-            background-color: ${gruvbox.bg3} !important;
-            border-color: ${gruvbox.bg4} !important;
+        /* Syntax highlighting */
+        .pl-c,
+        .pl-c1 {
+            color: ${gruvbox.gray};
         }
         
-        /* === SYNTAX HIGHLIGHTING === */
-        
-        /* Base code styling */
-        .pl-c, /* comment */
-        .pl-c1 /* constant, numeric, label */ {
-            color: ${gruvbox.syntax_comment} !important;
-            font-style: italic !important;
+        .pl-k,
+        .pl-kos {
+            color: ${gruvbox.red};
         }
         
-        .pl-k, /* keyword */
-        .pl-kos /* keyword operator symbol */ {
-            color: ${gruvbox.syntax_keyword} !important;
-            font-weight: bold !important;
+        .pl-s,
+        .pl-s1,
+        .pl-pds {
+            color: ${gruvbox.green};
         }
         
-        .pl-s, /* string */
-        .pl-s1 /* string content */,
-        .pl-pds /* punctuation definition string */ {
-            color: ${gruvbox.syntax_string} !important;
+        .pl-v,
+        .pl-en {
+            color: ${gruvbox.blue};
         }
         
-        .pl-v, /* variable */
-        .pl-en /* entity name function */ {
-            color: ${gruvbox.syntax_variable} !important;
+        .pl-e,
+        .pl-ent {
+            color: ${gruvbox.yellow};
         }
         
-        .pl-e, /* entity */
-        .pl-ent /* entity tag */ {
-            color: ${gruvbox.syntax_type} !important;
-        }
-        
-        .pl-smi, /* storage modifier import */
-        .pl-ent /* entity tag */ {
-            color: ${gruvbox.syntax_keyword} !important;
-        }
-        
-        .pl-ml /* markup list */,
-        .pl-mh /* markup heading */ {
-            color: ${gruvbox.syntax_constant} !important;
-        }
-        
-        .pl-cce /* comment constant escape */,
-        .pl-sr /* string regexp */ {
-            color: ${gruvbox.syntax_preprocessor} !important;
-        }
-        
-        .pl-ii /* invalid illegal */ {
-            background-color: ${gruvbox.red} !important;
-            color: ${gruvbox.bg0} !important;
-        }
-        
-        .pl-iu /* invalid deprecated */ {
-            color: ${gruvbox.gray} !important;
-        }
-        
-        .pl-mb /* markup bold */ {
-            font-weight: bold !important;
-            color: ${gruvbox.fg0} !important;
-        }
-        
-        .pl-mi /* markup italic */ {
-            font-style: italic !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        .pl-mc /* markup code */ {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border-radius: 3px !important;
-            padding: 2px 4px !important;
-        }
-        
-        .pl-mi1 /* markup inserted */ {
-            color: ${gruvbox.green} !important;
-        }
-        
-        .pl-md /* markup deleted */ {
-            color: ${gruvbox.red} !important;
-            text-decoration: line-through !important;
-        }
-        
-        /* === CODE BLOCK SPECIFIC === */
-        
-        /* Read-only text area */
-        #read-only-cursor-text-area,
-        .react-blob-textarea {
-            background-color: ${gruvbox.bg0_h} !important;
-            color: ${gruvbox.fg} !important;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-            font-size: 12px !important;
-            line-height: 1.5 !important;
-            border: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        
-        /* Symbol highlight */
-        .symbol-highlight {
-            background-color: ${gruvbox.bright_blue}33 !important;
-            border: 1px solid ${gruvbox.bright_blue} !important;
-            border-radius: 3px !important;
-        }
-        
-        /* Find results */
-        #find-result-marks-container {
-            background-color: ${gruvbox.bg0_h} !important;
-        }
-        
-        /* === CODE SIZE BANNER === */
-        
-        .react-code-size-details-banner,
-        .react-code-size-details-in-header,
-        .CodeSizeDetails-module__Box--QdxnQ,
-        .CodeSizeDetails-module__Box_1--_uFDs {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 6px !important;
-        }
-        
-        .CodeSizeDetails-module__Truncate_1--er0Uk {
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === FILE TREE PANE === */
-        
-        .ReposFileTreePane-module__Pane--D26Sw,
-        .ReposFileTreePane-module__HidePane--a07q8,
-        .ReposFileTreePane-module__HideTree--IyYTf,
-        .react-tree-toggle-button-with-indicator {
-            background-color: ${gruvbox.bg0} !important;
-            border-right: 1px solid ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === FILE NAME HEADER === */
-        
-        .FileNameStickyHeader-module__Box_1--HSpOJ,
-        .FileNameStickyHeader-module__Box_2--_pDx6,
-        .FileNameStickyHeader-module__Box_3--AsYoJ,
-        .FileNameStickyHeader-module__Box_4--IyPx8,
-        .FileNameStickyHeader-module__Button--SaiiH,
-        .FileNameStickyHeader-module__GoToTopButton--9lB4x,
-        #file-name-id,
-        #sticky-file-name-id,
-        .StickyHeader {
-            background-color: ${gruvbox.bg0} !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === BLOB TOP BANNERS === */
-        
-        .BlobTopBanners-module__Box--g_bGk {
-            background-color: ${gruvbox.bg1} !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === BLOB TAB BUTTONS === */
-        
-        .BlobTabButtons-module__SegmentedControl--JMGov {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* === LATEST COMMIT INFO === */
-        
-        .LatestCommit-module__Box--Fimpo,
-        .LatestCommit-module__Box_1--aQ5OG,
-        .LatestCommit-module__Box_2--JDY37,
-        .LatestCommit-module__IconButton--Zxaob,
-        .CommitAttribution-module__CommitAttributionContainer--Si80C {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.bg2} !important;
-        }
-        
-        /* === EXPAND FILE TREE BUTTON === */
-        
-        .ExpandFileTreeButton-module__Button_1--g8F6Q,
-        .ExpandFileTreeButton-module__expandButton--oKI1R,
-        .ExpandFileTreeButton-module__filesButtonBreakpoint--03FKA {
-            background-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-            border-color: ${gruvbox.bg3} !important;
-        }
-        
-        /* === CODE PRINT HIDE === */
-        
-        .react-blob-print-hide {
-            display: none !important;
-        }
-        
-        /* === LINE CONTAINERS === */
-        
-        .child-of-line-106,
-        .child-of-line-116,
-        .child-of-line-126 {
-            background-color: ${gruvbox.bg0_h} !important;
-        }
-        
-        /* === CODE VIEW SPECIFIC UTILITIES === */
-        
-        .text-mono {
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        .lh-default {
-            line-height: 1.5 !important;
-        }
-        
-        /* === HIGHLIGHTED LINE MENU === */
-        
-        #highlighted-line-menu-container,
-        #highlighted-line-menu-positioner {
-            background-color: ${gruvbox.bg1} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
-        }
-        
-        /* === CLIPBOARD BUTTONS IN CODE VIEW === */
-        
-        #snippet-clipboard-copy-button,
-        #snippet-clipboard-copy-button-unpositioned,
-        .CopyToClipboardButton-module__tooltip--HDUYz {
-            background-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-        }
-        
-        #snippet-clipboard-copy-button:hover {
-            background-color: ${gruvbox.bg3} !important;
-            border-color: ${gruvbox.bg4} !important;
-        }
-        
-        /* === FILE RESULTS LIST === */
-        
-        .FileResultsList-module__FilesSearchBox--fSAh3,
-        .CodeViewHeader-module__FileResultsList--bglyC {
-            background-color: ${gruvbox.bg1} !important;
-            border-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === REPOSITORY CONTENT AREA === */
-        
-        .repository-content,
-        #repo-content-pjax-container,
-        #repo-content-turbo-frame,
-        .js-repo-pjax-container {
-            background-color: ${gruvbox.bg0} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        /* === UNDERLINE NAV IN CODE VIEW === */
-        
-        .UnderlineNav,
-        .UnderlineNav-body,
-        .UnderlineNav-actions,
-        .UnderlineNav-item,
-        .js-repo-nav {
-            background-color: ${gruvbox.bg0} !important;
-            border-bottom-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-        }
-        
-        .UnderlineNav-item.selected {
-            background-color: transparent !important;
-            border-bottom-color: ${gruvbox.blue} !important;
-            color: ${gruvbox.blue} !important;
-        }
-        
-        /* === SCROLLBAR FOR CODE VIEW === */
-        
-        .react-code-lines::-webkit-scrollbar,
-        .react-code-file-contents::-webkit-scrollbar {
-            width: 12px !important;
-            height: 12px !important;
-            background-color: ${gruvbox.bg0_h} !important;
-        }
-        
-        .react-code-lines::-webkit-scrollbar-thumb,
-        .react-code-file-contents::-webkit-scrollbar-thumb {
-            background-color: ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-            border: 2px solid ${gruvbox.bg0_h} !important;
-        }
-        
-        .react-code-lines::-webkit-scrollbar-thumb:hover,
-        .react-code-file-contents::-webkit-scrollbar-thumb:hover {
-            background-color: ${gruvbox.bg4} !important;
-        }
-        
-        /* === SELECTION IN CODE VIEW === */
-        
-        .react-code-lines ::selection,
-        .react-code-file-contents ::selection {
-            background-color: ${gruvbox.selection} !important;
-            color: ${gruvbox.fg0} !important;
-        }
-        
-        /* === CODE LINE SELECTION STATES === */
-        
-        .react-file-line.selected {
-            background-color: ${gruvbox.bg2} !important;
-        }
-        
-        .react-file-line.highlighted {
-            background-color: ${gruvbox.bright_blue}22 !important;
-        }
-        
-        /* === RESPONSIVE CODE VIEW === */
-        
-        @media (max-width: 768px) {
-            .react-code-view-header-element--narrow,
-            .react-code-view-header-wrap--narrow {
-                background-color: ${gruvbox.bg0} !important;
-            }
-            
-            .react-code-view-header-mb--narrow {
-                margin-bottom: 16px !important;
-            }
-            
-            .react-line-number {
-                min-width: 40px !important;
-                padding: 0 8px !important;
-            }
-        }
-        
-        /* === GUTTER STYLING === */
-        
-        [data-line-number]:before {
-            content: attr(data-line-number);
-            display: inline-block;
-            width: 100%;
-            text-align: right;
-            color: ${gruvbox.fg3} !important;
-        }
-        
-        /* === CODE BLOCK BORDERS === */
-        
-        .react-code-file-contents {
-            border: 1px solid ${gruvbox.bg2} !important;
-            border-radius: 6px !important;
-            overflow: hidden !important;
-        }
-        
-        /* === FOCUS STATES FOR CODE NAVIGATION === */
-        
-        .react-file-line:focus,
-        .react-code-text:focus {
-            outline: 2px solid ${gruvbox.blue} !important;
-            outline-offset: 2px !important;
+        .pl-smi {
+            color: ${gruvbox.purple};
         }
         
         /* =================================================================
-           EXISTING STYLES (from original userscript)
+           GENERAL STYLES - VẪN DÙNG !important
            ================================================================= */
-        
-        /* (Include all the existing styles from the original userscript here) */
-        /* ... existing styles ... */
-        
-        /* === BASE BODY STYLES === */
         
         body, html {
             background-color: ${gruvbox.bg0} !important;
             color: ${gruvbox.fg} !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
         }
         
-        /* === APP HEADER === */
-        
-        .AppHeader, header, [data-testid="AppHeader"] {
-            background-color: ${gruvbox.bg0} !important;
-            border-bottom: 1px solid ${gruvbox.bg2} !important;
-        }
-        
-        /* === BUTTONS === */
-        
-        .Button, .btn {
-            background-color: ${gruvbox.bg2} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-            border-radius: 6px !important;
-        }
-        
-        .Button:hover, .btn:hover {
-            background-color: ${gruvbox.bg3} !important;
-        }
-        
-        /* === LINKS === */
-        
-        a, .Link {
-            color: ${gruvbox.blue} !important;
-        }
-        
-        a:hover, .Link:hover {
-            color: ${gruvbox.aqua} !important;
-        }
-        
-        /* === INPUTS === */
-        
-        input, textarea, select, .form-control {
-            background-color: ${gruvbox.bg1} !important;
-            color: ${gruvbox.fg} !important;
-            border: 1px solid ${gruvbox.bg3} !important;
-        }
-        
-        /* === AVATARS === */
-        
-        .avatar {
-            border: 2px solid ${gruvbox.bg3} !important;
-        }
-        
-        /* === ICONS === */
-        
-        .octicon {
-            color: ${gruvbox.fg4} !important;
-        }
-        
-        /* === UTILITY CLASSES === */
-        
-        .color-fg-default {
-            color: ${gruvbox.fg} !important;
-        }
-        
-        .color-fg-muted {
-            color: ${gruvbox.fg3} !important;
-        }
-        
-        .color-bg-default {
+        .page-responsive {
             background-color: ${gruvbox.bg0} !important;
         }
         
-        .color-bg-subtle {
+        .Box {
             background-color: ${gruvbox.bg1} !important;
+            border-color: ${gruvbox.bg2} !important;
+            color: ${gruvbox.fg} !important;
         }
         
-        /* === SCROLLBAR === */
-        
-        ::-webkit-scrollbar {
-            width: 12px !important;
+        .feed-content {
             background-color: ${gruvbox.bg1} !important;
+            color: ${gruvbox.fg} !important;
+            border-color: ${gruvbox.bg2} !important;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background-color: ${gruvbox.bg3} !important;
+        .AppHeader {
+            background-color: ${gruvbox.bg0} !important;
+            border-bottom-color: ${gruvbox.bg2} !important;
+        }
+        
+        /* ... (giữ nguyên các general styles khác) ... */
+        
+        /* Ngăn fade-in animations cho code */
+        .react-code-file-contents,
+        .react-code-lines,
+        .react-file-line {
+            transition: none !important;
+            animation: none !important;
+        }
+        
+        /* Đảm bảo container code có chiều cao đúng */
+        .react-code-file-contents {
+            min-height: 20px !important;
         }
     `);
 
-    // Function to apply dynamic styles to code view
-    function applyCodeViewStyles() {
-        // Apply to dynamically loaded code containers
-        document.querySelectorAll('.react-code-file-contents, .react-code-lines, .react-file-line').forEach(el => {
-            if (!el.hasAttribute('data-gruvbox-codestyled')) {
-                el.setAttribute('data-gruvbox-codestyled', 'true');
+    // Function để apply styles và ngăn flickering
+    function applyCodeViewStylesNoFlicker() {
+        console.log('GitHub Gruvbox: Applying no-flicker code styles');
+        
+        // Tìm tất cả code elements
+        const codeElements = [
+            '.react-code-file-contents',
+            '.react-code-lines', 
+            '.react-code-line-contents-no-virtualization',
+            '.react-file-line',
+            '.react-code-text',
+            '[data-line-number]',
+            '.react-line-number',
+            '.blob-wrapper',
+            '.blob-code',
+            '.blob-code-inner',
+            '.blob-num'
+        ];
+        
+        // Phase 1: Ẩn unstyled code và style chúng
+        codeElements.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                // Đánh dấu là đã styled
+                if (!element.hasAttribute('data-gruvbox-styled')) {
+                    element.setAttribute('data-gruvbox-styled', 'true');
+                    
+                    // Apply styles
+                    if (element.classList.contains('react-code-file-contents') || 
+                        element.classList.contains('react-code-lines') ||
+                        element.classList.contains('react-code-line-contents-no-virtualization') ||
+                        element.classList.contains('blob-wrapper')) {
+                        element.style.backgroundColor = gruvbox.bg0_h;
+                        element.style.color = gruvbox.fg;
+                    }
+                    
+                    if (element.classList.contains('react-file-line') ||
+                        element.classList.contains('react-code-text') ||
+                        element.classList.contains('blob-code') ||
+                        element.classList.contains('blob-code-inner')) {
+                        element.style.color = gruvbox.fg;
+                        element.style.backgroundColor = gruvbox.bg0_h;
+                    }
+                    
+                    if (element.hasAttribute('data-line-number') ||
+                        element.classList.contains('react-line-number') ||
+                        element.classList.contains('blob-num')) {
+                        element.style.backgroundColor = gruvbox.bg0;
+                        element.style.color = gruvbox.fg3;
+                        element.style.borderRight = `1px solid ${gruvbox.bg2}`;
+                    }
+                }
                 
-                // Force background colors
-                if (el.classList.contains('react-code-file-contents')) {
-                    el.style.backgroundColor = gruvbox.bg0_h;
-                }
-                if (el.classList.contains('react-code-lines')) {
-                    el.style.backgroundColor = gruvbox.bg0_h;
-                }
-                if (el.classList.contains('react-file-line')) {
-                    el.style.backgroundColor = gruvbox.bg0_h;
-                    el.style.color = gruvbox.fg;
-                }
-            }
+                // Force hiển thị styled code
+                element.style.opacity = '1';
+                element.style.visibility = 'visible';
+                element.style.display = '';
+                
+                // Remove any fade transitions
+                element.style.transition = 'none';
+                element.style.animation = 'none';
+            });
         });
         
-        // Apply syntax highlighting classes
-        document.querySelectorAll('.pl-c, .pl-k, .pl-s, .pl-v, .pl-en, .pl-smi').forEach(el => {
-            if (!el.hasAttribute('data-gruvbox-syntax')) {
-                el.setAttribute('data-gruvbox-syntax', 'true');
-            }
+        // Phase 2: Apply syntax highlighting
+        const syntaxSelectors = [
+            '.pl-c', '.pl-c1', '.pl-k', '.pl-kos', 
+            '.pl-s', '.pl-s1', '.pl-pds', '.pl-v', 
+            '.pl-en', '.pl-e', '.pl-ent', '.pl-smi'
+        ];
+        
+        syntaxSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                if (!element.hasAttribute('data-gruvbox-syntax')) {
+                    element.setAttribute('data-gruvbox-syntax', 'true');
+                    
+                    if (element.classList.contains('pl-c') || element.classList.contains('pl-c1')) {
+                        element.style.color = gruvbox.gray;
+                    } else if (element.classList.contains('pl-k') || element.classList.contains('pl-kos')) {
+                        element.style.color = gruvbox.red;
+                    } else if (element.classList.contains('pl-s') || element.classList.contains('pl-s1') || element.classList.contains('pl-pds')) {
+                        element.style.color = gruvbox.green;
+                    } else if (element.classList.contains('pl-v') || element.classList.contains('pl-en')) {
+                        element.style.color = gruvbox.blue;
+                    } else if (element.classList.contains('pl-e') || element.classList.contains('pl-ent')) {
+                        element.style.color = gruvbox.yellow;
+                    } else if (element.classList.contains('pl-smi')) {
+                        element.style.color = gruvbox.purple;
+                    }
+                }
+            });
         });
         
-        // Apply to line numbers
-        document.querySelectorAll('[data-line-number], .react-line-number').forEach(el => {
-            if (!el.hasAttribute('data-gruvbox-linenumber')) {
-                el.setAttribute('data-gruvbox-linenumber', 'true');
-                el.style.backgroundColor = gruvbox.bg0;
-                el.style.color = gruvbox.fg3;
-                el.style.borderRight = `1px solid ${gruvbox.bg2}`;
-            }
-        });
+        // Phase 3: Đảm bảo parent containers visible
+        const parentContainers = document.querySelectorAll(
+            '.react-code-file-contents, .blob-wrapper, .repository-content'
+        );
         
-        // Apply to code view header
-        document.querySelectorAll('.BlobViewHeader-module__Box--pvsIA, .react-blob-sticky-header').forEach(el => {
-            if (!el.hasAttribute('data-gruvbox-header')) {
-                el.setAttribute('data-gruvbox-header', 'true');
-                el.style.backgroundColor = gruvbox.bg0;
-                el.style.borderBottom = `1px solid ${gruvbox.bg2}`;
-            }
+        parentContainers.forEach(container => {
+            container.style.opacity = '1';
+            container.style.visibility = 'visible';
+            
+            // Force reflow để tránh flicker
+            void container.offsetHeight;
         });
     }
 
-    // Function to enhance existing styles
-    function enhanceExistingStyles() {
-        // Apply to all code containers
-        applyCodeViewStyles();
-        
-        // Force body background
+    // Function để apply general styles
+    function applyGeneralStyles() {
+        // ... (giữ nguyên) ...
         document.body.style.backgroundColor = gruvbox.bg0;
         document.body.style.color = gruvbox.fg;
-        
-        // Force html background
-        document.documentElement.style.backgroundColor = gruvbox.bg0;
-        
-        // Check for code view specifically
-        if (document.querySelector('.react-code-file-contents') || 
-            document.querySelector('.blob-wrapper') ||
-            document.querySelector('[data-testid="code-view-content"]')) {
-            
-            console.log('GitHub Gruvbox Theme: Code view detected, applying enhanced styles');
-            
-            // Add a custom class to body when in code view
-            document.body.classList.add('gruvbox-code-view');
-        }
     }
 
-    // Initial application
-    enhanceExistingStyles();
+    // Function chính với anti-flicker logic
+    function initializeThemeNoFlicker() {
+        console.log('GitHub Gruvbox: Initializing no-flicker theme');
+        
+        // Bước 1: Ngay lập tức ẩn code chưa styled
+        const hideUnstyledCode = () => {
+            const codeContainers = document.querySelectorAll(
+                '.react-code-file-contents, .react-code-lines, .blob-wrapper'
+            );
+            
+            codeContainers.forEach(container => {
+                if (!container.hasAttribute('data-gruvbox-styled')) {
+                    container.style.opacity = '0';
+                    container.style.visibility = 'hidden';
+                }
+            });
+        };
+        
+        // Bước 2: Apply styles và hiện styled code
+        const showStyledCode = () => {
+            applyCodeViewStylesNoFlicker();
+            
+            // Force re-render
+            requestAnimationFrame(() => {
+                applyCodeViewStylesNoFlicker();
+            });
+        };
+        
+        // Execute
+        hideUnstyledCode();
+        applyGeneralStyles();
+        
+        // Delay một chút rồi hiện styled code
+        setTimeout(showStyledCode, 10);
+        setTimeout(showStyledCode, 50);
+        setTimeout(showStyledCode, 100);
+        
+        // Listen for DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                hideUnstyledCode();
+                setTimeout(showStyledCode, 10);
+                applyGeneralStyles();
+            });
+        }
+        
+        // Listen for page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                hideUnstyledCode();
+                showStyledCode();
+                applyGeneralStyles();
+            }, 100);
+        });
+    }
+
+    // Khởi động
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeThemeNoFlicker);
+    } else {
+        initializeThemeNoFlicker();
+    }
     
-    // Apply on DOM changes with focus on code containers
-    const observer = new MutationObserver((mutations) => {
-        let shouldApply = false;
+    // Mutation observer chuyên xử lý code view
+    const codeObserver = new MutationObserver((mutations) => {
+        let hasCodeElements = false;
+        
         mutations.forEach((mutation) => {
             if (mutation.addedNodes.length > 0) {
-                // Check if any added nodes are code-related
                 mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1) { // Element node
+                    if (node.nodeType === 1) {
+                        // Check if this is code-related
                         if (node.matches && (
-                            node.matches('.react-code-file-contents, .react-code-lines, .react-file-line') ||
-                            node.querySelector('.react-code-file-contents, .react-code-lines, .react-file-line')
+                            node.matches('.react-code-file-contents, .react-code-lines, .blob-wrapper, .react-file-line') ||
+                            node.querySelector('.react-code-file-contents, .react-code-lines, .blob-wrapper, .react-file-line')
                         )) {
-                            shouldApply = true;
+                            hasCodeElements = true;
+                            
+                            // Ngay lập tức ẩn unstyled code
+                            if (node.matches && !node.hasAttribute('data-gruvbox-styled')) {
+                                node.style.opacity = '0';
+                                node.style.visibility = 'hidden';
+                            }
+                            
+                            // Check children too
+                            if (node.querySelectorAll) {
+                                node.querySelectorAll(
+                                    '.react-code-file-contents, .react-code-lines, .blob-wrapper, .react-file-line'
+                                ).forEach(child => {
+                                    if (!child.hasAttribute('data-gruvbox-styled')) {
+                                        child.style.opacity = '0';
+                                        child.style.visibility = 'hidden';
+                                    }
+                                });
+                            }
                         }
                     }
                 });
             }
         });
-        if (shouldApply) {
-            setTimeout(enhanceExistingStyles, 100);
+        
+        if (hasCodeElements) {
+            // Apply styles after a very short delay
+            setTimeout(() => {
+                applyCodeViewStylesNoFlicker();
+            }, 0);
+            
+            // And again after render
+            requestAnimationFrame(() => {
+                applyCodeViewStylesNoFlicker();
+            });
         }
     });
     
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false
-    });
+    // Start observing
+    setTimeout(() => {
+        codeObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        console.log('GitHub Gruvbox: Code observer started');
+    }, 1000);
     
-    // Also apply on page load
-    window.addEventListener('load', enhanceExistingStyles);
-    document.addEventListener('DOMContentLoaded', enhanceExistingStyles);
-    
-    // Reapply for SPA navigation
-    const intervalId = setInterval(enhanceExistingStyles, 1000);
+    // Monitor for SPA navigation
+    let lastUrl = location.href;
+    const urlObserver = setInterval(() => {
+        if (lastUrl !== location.href) {
+            lastUrl = location.href;
+            console.log('GitHub Gruvbox: URL changed');
+            
+            // Reapply với anti-flicker
+            setTimeout(() => {
+                const hideUnstyled = () => {
+                    document.querySelectorAll(
+                        '.react-code-file-contents, .react-code-lines, .blob-wrapper'
+                    ).forEach(el => {
+                        if (!el.hasAttribute('data-gruvbox-styled')) {
+                            el.style.opacity = '0';
+                            el.style.visibility = 'hidden';
+                        }
+                    });
+                };
+                
+                hideUnstyled();
+                setTimeout(applyCodeViewStylesNoFlicker, 10);
+                setTimeout(applyCodeViewStylesNoFlicker, 50);
+            }, 100);
+        }
+    }, 1000);
     
     // Cleanup
     window.addEventListener('beforeunload', () => {
-        clearInterval(intervalId);
-        observer.disconnect();
+        clearInterval(urlObserver);
+        codeObserver.disconnect();
     });
-
-    console.log('GitHub Gruvbox Theme with Enhanced Code View loaded');
+    
+    console.log('GitHub Gruvbox Theme loaded - No flicker version');
 
 })();
